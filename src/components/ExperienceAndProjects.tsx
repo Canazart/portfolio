@@ -1,183 +1,696 @@
+import type { CSSProperties } from 'react';
+import { ArrowUpRight, Briefcase, Code, ShieldCheck, Terminal, TrendingUp } from 'lucide-react';
+import type { LabTab } from './SicDemo';
+
 export function Experience() {
   return (
     <section className="section" id="experience">
-      <div className="sec-label reveal">TRAJETÓRIA</div>
-      <h2 className="sec-title reveal">Experiência <span>Profissional</span></h2>
+      <div className="sec-header reveal">
+        <div className="sec-label">TRAJETÓRIA PROFISSIONAL</div>
+        <h2 className="sec-title">
+          Experiência <span>Profissional</span>
+        </h2>
+        <p className="sec-subtitle">
+          Evolução contínua da gestão financeira e suprimentos siderúrgicos à operação estratégica em tempo real
+          e desenvolvimento de sistemas no CCO da mineração.
+        </p>
+      </div>
 
       <div className="exp-wrap">
-        <div className="exp-item reveal">
-          <div className="exp-meta">
-            <span>DEZ 2025 , PRESENTE</span>
-            <span className="exp-badge active">● EM ATIVIDADE</span>
-          </div>
-          <div className="exp-company">BEMISA HOLDING S.A.</div>
-          <div className="exp-role">OPERADOR DE SALA DE CONTROLE (CRO) , MINA PEDRA BRANCA</div>
-          <ul className="exp-list">
-            <li>Implantação completa do sistema de despacho MineTrack (Sodep): infraestrutura embarcada, parametrização de frotas, frentes de lavra, litologias e rotas operacionais.</li>
-            <li>Gerenciamento em tempo real do fluxo produtivo pit-to-plant, garantindo aderência ao plano de lavra e metas de produtividade.</li>
-            <li>Monitoramento de KPIs de frota (DF, UT, produtividade) e gestão técnica de indisponibilidades e desvios operacionais.</li>
-            <li>Interface com equipes de operação, manutenção e fornecedor Sodep para resolução de inconsistências e evolução contínua do sistema.</li>
-            <li>Desenvolvimento do Sistema de Informação de Controle (SIC) integrado ao MineTrack, com dashboards operacionais em HTML/CSS/JS.</li>
-          </ul>
-        </div>
-
-        <div className="exp-item reveal">
-          <div className="exp-meta">
-            <span>JAN 2025 , DEZ 2025</span>
-            <span className="exp-badge">ENCERRADO</span>
-          </div>
-          <div className="exp-company">ARCELORMITTAL BRASIL</div>
-          <div className="exp-role">ESTAGIÁRIO EM SUPRIMENTOS , MRO E MATÉRIA-PRIMA</div>
-          <ul className="exp-list">
-            <li>Suporte ao planejamento e gestão da cadeia de suprimentos com foco no abastecimento de sinterização e alto forno.</li>
-            <li>Controle de estoques críticos (minério de ferro, calcário, coque) via SAP MM e NetWeaver.</li>
-            <li>Validação de parâmetros fiscais (CFOP e tributos) e integridade de dados de pesagem e movimentação de materiais.</li>
-          </ul>
-        </div>
-
-        <div className="exp-item reveal">
-          <div className="exp-meta">
-            <span>JUL 2024 , JAN 2025</span>
-            <span className="exp-badge">ENCERRADO</span>
-          </div>
-          <div className="exp-company">PH INTRALOGÍSTICA</div>
-          <div className="exp-role">ASSISTENTE DE OPERAÇÕES , LOGÍSTICA SIDERÚRGICA</div>
-          <ul className="exp-list">
-            <li>Controle operacional e logístico de transporte de gusa e escória em ambiente de alto forno.</li>
-            <li>Monitoramento de KPIs de frota, disponibilidade de ativos e produtividade por análise técnica de dados.</li>
-            <li>Execução de checklists de equipamentos pesados e interface com frentes de serviço para otimização de recursos.</li>
-          </ul>
-        </div>
-
-        <div className="exp-item reveal">
-          <div className="exp-meta">
-            <span>MAR 2024 , JUL 2024</span>
-            <span className="exp-badge">ENCERRADO</span>
-          </div>
-          <div className="exp-company">CONSTRUTORA HELMO</div>
-          <div className="exp-role">ESTAGIÁRIO TÉCNICO , CONTROLADORIA</div>
-          <ul className="exp-list">
-            <li>Gestão de custos de infraestrutura: CAPEX, OPEX e análise de desvios orçamentários (budget vs. actual).</li>
-            <li>Processamento de medições de serviços e lançamentos financeiros via Sieg e Excel.</li>
-            <li>Monitoramento de obrigações financeiras e fluxo de caixa de projetos de infraestrutura.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-export function Project() {
-  return (
-    <section className="section" id="project">
-      <div className="sec-label reveal">PROJETO DESTAQUE</div>
-      <h2 className="sec-title reveal">Short Interval <span>Control</span></h2>
-
-      <div className="proj-card reveal">
-        <div className="ca ca-tl"></div><div className="ca ca-tr"></div><div className="ca ca-bl"></div><div className="ca ca-br"></div>
-        <div className="proj-inner">
-          <div className="proj-info">
-            <div className="proj-tech">⬡ &nbsp;HTML · CSS · JAVASCRIPT</div>
-            <div className="proj-title">SIC , Sistema de Controle por Intervalo</div>
-            <div className="proj-sub">INTEGRADO AO MINETRACK · CCO BEMISA</div>
-            <p className="proj-desc">Sistema web de Short Interval Control desenvolvido do zero e integrado ao sistema de despacho MineTrack (Sodep), permitindo monitoramento da produção em janelas horárias com rastreamento por litologia, frente e equipamento. Inclui importação automatizada de dados via paste, cálculo em tempo real de KPIs, registro estruturado de paradas e desvios, dashboards operacionais e auto-save. Ferramenta em uso ativo no CCO da Mina Pedra Branca.</p>
-            <div className="proj-tags">
-              {['SHORT INTERVAL CONTROL', 'MINETRACK INTEGRATION', 'KPI DASHBOARD', 'REAL-TIME MONITORING', 'FLEET MANAGEMENT', 'PIT-TO-PLANT'].map(t => (
-                <span key={t} className="proj-tag">{t}</span>
-              ))}
-            </div>
-          </div>
-          <div className="proj-visual">
-            <div className="mock-strip">
-              <div className="mock-row">
-                <div className="mock-cell"><div className="mock-lbl">PRODUÇÃO ACUM.</div><div className="mock-val" style={{ color: 'var(--accent2)' }}>2.840<span style={{ fontSize: '11px', color: 'var(--muted)' }}> t</span></div></div>
-                <div className="mock-cell"><div className="mock-lbl">META TURNO</div><div className="mock-val" style={{ color: 'var(--text)' }}>3.200<span style={{ fontSize: '11px', color: 'var(--muted)' }}> t</span></div></div>
-                <div className="mock-cell"><div className="mock-lbl">ADERÊNCIA</div><div className="mock-val" style={{ color: 'var(--yellow)' }}>88<span style={{ fontSize: '11px', color: 'var(--muted)' }}> %</span></div></div>
-              </div>
-              <div className="mock-row">
-                <div className="mock-cell"><div className="mock-lbl">DISP. FÍSICA</div><div className="mock-val">91<span style={{ fontSize: '11px', color: 'var(--muted)' }}> %</span></div></div>
-                <div className="mock-cell"><div className="mock-lbl">UTIL. FÍSICA</div><div className="mock-val">84<span style={{ fontSize: '11px', color: 'var(--muted)' }}> %</span></div></div>
-                <div className="mock-cell"><div className="mock-lbl">CAMINHÕES ATI.</div><div className="mock-val">6<span style={{ fontSize: '11px', color: 'var(--muted)' }}> / 8</span></div></div>
-              </div>
-            </div>
-            <div className="mock-bars">
-              <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '7px', letterSpacing: '3px', color: 'var(--muted2)', marginBottom: '4px' }}>PRODUÇÃO POR LITOLOGIA</div>
-              <div className="mock-bar-row"><div className="mock-bar-lbl">HEM</div><div className="mock-bar-track"><div className="mock-bar-fill" style={{ '--w': '78%', background: '#cc3a2a' } as React.CSSProperties}></div></div><div className="mock-bar-pct">78%</div></div>
-              <div className="mock-bar-row"><div className="mock-bar-lbl">OPE</div><div className="mock-bar-track"><div className="mock-bar-fill" style={{ '--w': '56%', background: '#d4882a' } as React.CSSProperties}></div></div><div className="mock-bar-pct">56%</div></div>
-              <div className="mock-bar-row"><div className="mock-bar-lbl">ISA</div><div className="mock-bar-track"><div className="mock-bar-fill" style={{ '--w': '42%', background: '#7a9e88' } as React.CSSProperties}></div></div><div className="mock-bar-pct">42%</div></div>
-            </div>
-            <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '7px', letterSpacing: '2px', color: 'var(--muted2)' }}>● MINETRACK IMPORTADO &nbsp;·&nbsp; ● AUTO-SAVE ATIVO</div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-export function KDD() {
-  return (
-    <section className="section" id="kdd">
-      <div className="sec-label reveal">PROJETO EM DESENVOLVIMENTO</div>
-      <h2 className="sec-title reveal">Análise e Otimização <span>com Python</span></h2>
-
-      <div className="proj-card reveal" style={{ opacity: .93 }}>
-        <div className="ca ca-tl"></div><div className="ca ca-tr"></div><div className="ca ca-bl"></div><div className="ca ca-br"></div>
-        <div style={{ position: 'absolute', top: '20px', right: '20px', fontFamily: "'Share Tech Mono', monospace", fontSize: '8px', letterSpacing: '3px', padding: '5px 12px', border: '1px solid var(--accent)', borderRadius: '2px', color: 'var(--accent)', background: 'var(--accent-glow)', zIndex: 2 }}>◐ EM DESENVOLVIMENTO</div>
-
-        <div style={{ padding: '40px 48px' }}>
-          <div className="proj-tech" style={{ color: 'var(--accent)' }}>⬡ &nbsp;PYTHON · KDD · DATA MINING</div>
-          <div className="proj-title">KDD Aplicado à Operação de Mina</div>
-          <div className="proj-sub" style={{ color: 'var(--accent)', opacity: .8 }}>KNOWLEDGE DISCOVERY IN DATABASES · NOV 2025 · PRESENTE</div>
-
-          <div className="kdd-inner-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '56px', marginTop: '28px' }}>
+        {/* BEMISA — CAREER PROGRESSION */}
+        <article className="exp-card featured reveal">
+          <div className="exp-top">
             <div>
-              <p className="proj-desc" style={{ marginBottom: '12px' }}>Projeto de análise operacional baseado no processo KDD (Knowledge Discovery in Databases), aplicado sobre dados históricos de despacho de mina. O objetivo central é automatizar a identificação de padrões ocultos na operação · ciclos anômalos de transporte, frentes com baixa produtividade recorrente, equipamentos com alta taxa de indisponibilidade não planejada · que passariam despercebidos em análises manuais.</p>
-              <p className="proj-desc" style={{ marginBottom: '12px' }}>Cada padrão identificado é diretamente traduzido em impacto de custo operacional: tempo improdutivo de frota representa custo hora-máquina desperdiçado, gargalos no ciclo de carregamento reduzem a tonelagem por turno e aumentam o custo unitário de movimentação. O sistema estrutura esses diagnósticos de forma automatizada, eliminando a dependência de análise manual e permitindo respostas mais rápidas a desvios recorrentes.</p>
-              <p className="proj-desc" style={{ marginBottom: '24px' }}>A evolução prevista inclui modelos preditivos capazes de antecipar quedas de produtividade antes que ocorram, com base em variáveis históricas como composição de frota, condições de turno e sequência de frentes lavradas.</p>
+              <h3 className="exp-company">BEMISA HOLDING S.A.</h3>
+              <div className="exp-loc">
+                Mina Pedra Branca · João Monlevade, MG · Tempo integral (1 ano)
+              </div>
+            </div>
+            <div className="exp-meta">
+              <span className="exp-period">DEZ 2025 — O MOMENTO</span>
+              <span className="exp-badge active">● EM ATIVIDADE</span>
+              <span className="exp-badge promo">↑ PROMOÇÃO EM AGO 2026</span>
+            </div>
+          </div>
+
+          <div className="exp-progression">
+            {/* ROLE 1: TÉCNICO DE SALA DE CONTROLE I */}
+            <div className="exp-step current">
+              <div className="exp-step-head">
+                <div className="exp-step-role">Técnico de Sala de Controle I</div>
+                <span className="exp-period">AGO 2026 — O MOMENTO</span>
+              </div>
+              <ul className="exp-list">
+                <li>
+                  Gestão e controle da operação de mina em tempo real via sistema de despacho (<strong>FMS</strong>).
+                </li>
+                <li>
+                  Monitoramento de KPIs operacionais e identificação ativa de desvios de produção e produtividade.
+                </li>
+                <li>
+                  Interface direta com o <strong>planejamento de curto prazo</strong> e a <strong>manutenção</strong>{' '}
+                  para tratamento de inconsistências e otimização da frota.
+                </li>
+                <li>
+                  Suporte à implantação, parametrização avançada e evolução contínua do{' '}
+                  <strong>MineTrack (Sodep)</strong>.
+                </li>
+                <li>
+                  Desenvolvimento do{' '}
+                  <strong>Algoritmo de Validação Heurística e Auditoria de Frota (Custom BRE)</strong>, aplicado à
+                  validação e auditoria algorítmica de apontamentos operacionais.
+                </li>
+                <li>
+                  Desenvolvimento e evolução da ferramenta de <strong>Short Interval Control (SIC)</strong> para
+                  acompanhamento operacional e suporte à decisão.
+                </li>
+              </ul>
+            </div>
+
+            {/* ROLE 2: OPERADOR DE SALA DE CONTROLE */}
+            <div className="exp-step">
+              <div className="exp-step-head">
+                <div className="exp-step-role" style={{ color: 'var(--text-main)' }}>
+                  Operador de Sala de Controle
+                </div>
+                <span className="exp-period">DEZ 2025 — AGO 2026 · 9 MESES</span>
+              </div>
+              <ul className="exp-list">
+                <li>
+                  Gestão em tempo real da operação via sistema de despacho (FMS), garantindo aderência ao plano de
+                  lavra.
+                </li>
+                <li>
+                  Monitoramento de KPIs operacionais (<strong>DF, UT, produtividade e tempo de ciclo</strong>), com
+                  foco na identificação rápida de desvios.
+                </li>
+                <li>
+                  Participação ativa na implantação do <strong>MineTrack (Sodep)</strong>, incluindo parametrização
+                  de frota e frentes de lavra.
+                </li>
+                <li>
+                  Interface entre operação e manutenção para tratamento de inconsistências e otimização da frota.
+                </li>
+                <li>
+                  Criação da ferramenta inicial de <strong>Short Interval Control (SIC)</strong> para acompanhamento
+                  horário e suporte à decisão no CCO.
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="exp-tags">
+            {[
+              'Gestão de Frotas',
+              'MineTrack (Sodep)',
+              'Análise de Dados',
+              'Short Interval Control',
+              'Custom BRE',
+              'Curto Prazo',
+            ].map((t) => (
+              <span key={t} className="exp-tag">
+                {t}
+              </span>
+            ))}
+          </div>
+        </article>
+
+        {/* ARCELORMITTAL */}
+        <article className="exp-card reveal">
+          <div className="exp-top">
+            <div>
+              <h3 className="exp-company">ARCELORMITTAL BRASIL</h3>
+              <div className="exp-loc">João Monlevade, MG · Tempo integral (1 ano)</div>
+            </div>
+            <div className="exp-meta">
+              <span className="exp-period">JAN 2025 — DEZ 2025</span>
+              <span className="exp-badge">CONCLUÍDO</span>
+            </div>
+          </div>
+          <div className="exp-role">Estagiário em Supply Chain | MRO e Recursos Minerários</div>
+          <ul className="exp-list">
+            <li>
+              Suporte ao planejamento e gestão da cadeia de suprimentos (Supply Chain), com foco no abastecimento
+              estratégico dos processos de <strong>sinterização e alto forno</strong>.
+            </li>
+            <li>
+              Apoio no controle de fluxo e gestão de estoque de matérias-primas críticas —{' '}
+              <strong>minério de ferro, calcário, areia, coque e magnesita</strong> — essenciais à produção de aço.
+            </li>
+            <li>
+              Execução técnica de lançamentos e conferências via <strong>SAP MM e NetWeaver</strong>, garantindo
+              integridade de dados de pesagem, movimentação de materiais e validação de parâmetros fiscais (CFOP e
+              tributos).
+            </li>
+          </ul>
+          <div className="exp-tags">
+            {['SAP MM', 'SAP NetWeaver', 'Matéria-Prima', 'Supply Chain', 'Follow-up', 'Conformidade Fiscal'].map(
+              (t) => (
+                <span key={t} className="exp-tag">
+                  {t}
+                </span>
+              )
+            )}
+          </div>
+        </article>
+
+        {/* PH INTRALOGÍSTICA */}
+        <article className="exp-card reveal">
+          <div className="exp-top">
+            <div>
+              <h3 className="exp-company">PH INTRALOGÍSTICA E SERVIÇOS</h3>
+              <div className="exp-loc">João Monlevade, MG · Meio período (7 meses)</div>
+            </div>
+            <div className="exp-meta">
+              <span className="exp-period">JUL 2024 — JAN 2025</span>
+              <span className="exp-badge">CONCLUÍDO</span>
+            </div>
+          </div>
+          <div className="exp-role">Aprendiz de Operações · Logística Siderúrgica</div>
+          <ul className="exp-list">
+            <li>
+              Controle operacional e logístico de transporte e limpeza industrial mecanizada em ambiente
+              siderúrgico.
+            </li>
+            <li>
+              Monitoramento de KPIs de frota, disponibilidade de ativos e produtividade por meio de análise técnica
+              de dados com <strong>Microsoft Power BI</strong>.
+            </li>
+            <li>
+              Execução de checklists de equipamentos pesados e interface direta com frentes de serviço para
+              otimização de recursos e conformidade com padrões de segurança e qualidade.
+            </li>
+          </ul>
+          <div className="exp-tags">
+            {['Coordenação de Equipe', 'Microsoft Power BI', 'KPIs de Frota', 'Segurança Operacional'].map((t) => (
+              <span key={t} className="exp-tag">
+                {t}
+              </span>
+            ))}
+          </div>
+        </article>
+
+        {/* CONSTRUTORA HELMO */}
+        <article className="exp-card reveal">
+          <div className="exp-top">
+            <div>
+              <h3 className="exp-company">CONSTRUTORA HELMO</h3>
+              <div className="exp-loc">João Monlevade, MG · Estágio (5 meses)</div>
+            </div>
+            <div className="exp-meta">
+              <span className="exp-period">MAR 2024 — JUL 2024</span>
+              <span className="exp-badge">CONCLUÍDO</span>
+            </div>
+          </div>
+          <div className="exp-role">Estagiário Técnico | Administrativo Financeiro</div>
+          <ul className="exp-list">
+            <li>
+              Processamento de lançamentos fiscais e conciliação contábil no setor de infraestrutura.
+            </li>
+            <li>
+              Monitoramento e controle de custos operacionais (<strong>OPEX</strong>) e de capital (
+              <strong>CAPEX</strong>), apoiando a gestão orçamentária e a análise de desvios.
+            </li>
+            <li>
+              Organização de dados financeiros e suporte ao acompanhamento de medições e obrigações via Sieg e
+              Excel.
+            </li>
+          </ul>
+          <div className="exp-tags">
+            {['Controle de Custos', 'CAPEX / OPEX', 'Análise Financeira', 'Conciliação Contábil'].map((t) => (
+              <span key={t} className="exp-tag">
+                {t}
+              </span>
+            ))}
+          </div>
+        </article>
+      </div>
+    </section>
+  );
+}
+
+interface ProjectsProps {
+  onOpenLabTab: (tab: LabTab) => void;
+}
+
+export function Projects({ onOpenLabTab }: ProjectsProps) {
+  return (
+    <section className="section" id="projects">
+      <div className="sec-header reveal">
+        <div className="sec-label">ENGENHARIA DE SOFTWARE APLICADA À MINERAÇÃO</div>
+        <h2 className="sec-title">
+          Projetos em <span>Destaque</span>
+        </h2>
+        <p className="sec-subtitle">
+          Sistemas reais desenhados para eliminar gargalos operacionais no CCO — da auditoria heurística de
+          apontamentos ao controle em tempo real e mineração de dados históricos.
+        </p>
+      </div>
+
+      <div className="proj-stack">
+        {/* PROJETO 1: CUSTOM BRE (NOVO DESTAQUE) */}
+        <article className="proj-card reveal">
+          <div className="ca ca-tl" />
+          <div className="ca ca-tr" />
+          <div className="ca ca-bl" />
+          <div className="ca ca-br" />
+          <div className="proj-inner">
+            <div className="proj-info">
+              <div className="proj-header-row">
+                <span className="proj-tech">JAVASCRIPT (ES6+) · REGEX · UNIX TIMESTAMPS</span>
+                <span className="proj-status prod">● EM PRODUÇÃO · BEMISA</span>
+              </div>
+              <h3 className="proj-title">Algoritmo de Validação Heurística e Auditoria de Frota (Custom BRE)</h3>
+              <div className="proj-sub">BUSINESS RULE ENGINE · AGO 2026 — O MOMENTO · CCO MINA PEDRA BRANCA</div>
+
+              <p className="proj-desc">
+                Criado para sanar uma lacuna crítica nos sistemas de gestão de frota (FMS) da mineração, que geram
+                altos volumes de dados mas carecem de inteligência contextual. Desenvolvi uma aplicação{' '}
+                <strong>client-side</strong> que opera como um <strong>Business Rule Engine (BRE)</strong>,
+                processando apontamentos brutos e entregando auditoria algorítmica imune a falsos positivos.
+              </p>
+              <p className="proj-desc">
+                Construída integralmente em <strong>JavaScript (ES6+), HTML5 e CSS3</strong>, a ferramenta realiza
+                parsing de dados tabulares, aplica taxonomias avançadas de <strong>Regex</strong> para categorizar
+                dinamicamente estados produtivos, ociosos ou justificáveis e converte datas/horas para{' '}
+                <strong>Unix Timestamps</strong> para calcular interseções temporais exatas — suprimindo alertas
+                indevidos quando manutenções sobrepõem intervalos obrigatórios ou trocas de turno.
+              </p>
+
+              <div className="proj-impact-box">
+                <strong>Impacto imediato:</strong> auditoria diária do CCO reduzida a{' '}
+                <strong>frações de segundo</strong> com total confiabilidade, garantindo rastreabilidade exata das
+                horas efetivas da frota e protegendo a validação e o faturamento dos contratos de garantia técnica.
+              </div>
+
               <div className="proj-tags">
-                <span className="proj-tag" style={{ borderColor: 'var(--border-focus)', color: 'var(--accent)' }}>PYTHON</span>
-                <span className="proj-tag" style={{ borderColor: 'var(--border-focus)', color: 'var(--accent)' }}>KDD</span>
-                <span className="proj-tag" style={{ borderColor: 'var(--border-focus)', color: 'var(--accent)' }}>DATA MINING</span>
-                <span className="proj-tag" style={{ borderColor: 'var(--border-focus)', color: 'var(--accent)' }}>PADRÕES OPERACIONAIS</span>
-                <span className="proj-tag" style={{ borderColor: 'var(--border-focus)', color: 'var(--accent)' }}>ANÁLISE DE CUSTO</span>
-                <span className="proj-tag" style={{ borderColor: 'var(--border-focus)', color: 'var(--accent)' }}>MODELOS PREDITIVOS</span>
-                <span className="proj-tag" style={{ borderColor: 'var(--border-focus)', color: 'var(--accent)' }}>AUTOMAÇÃO DE DIAGNÓSTICOS</span>
+                {[
+                  'CUSTOM BRE',
+                  'HEURISTIC VALIDATION',
+                  'UNIX TIMESTAMPS',
+                  'REGEX TAXONOMY',
+                  'D-1 CONTEXT MEMORY',
+                  'FLEET AUDIT',
+                ].map((t) => (
+                  <span key={t} className="proj-tag">
+                    {t}
+                  </span>
+                ))}
               </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-              <div>
-                <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '8px', letterSpacing: '3px', color: 'var(--muted2)', marginBottom: '14px' }}>EXEMPLO DE ANÁLISE (PYTHON)</div>
-                <div style={{ background: '#1e1e1e', border: '1px solid #333', borderRadius: '6px', padding: '16px', fontFamily: "'Share Tech Mono', monospace", fontSize: '11px', textAlign: 'left' }}>
-                  <div style={{ color: 'var(--muted)', marginBottom: '8px' }}># Analisando ciclos anômalos na frota de transporte</div>
-                  <span style={{ color: '#569cd6' }}>import</span> <span style={{ color: '#d4d4d4' }}>pandas</span> <span style={{ color: '#569cd6' }}>as</span> <span style={{ color: '#d4d4d4' }}>pd</span><br />
-                  <span style={{ color: '#4ec9b0' }}>df_fms</span> <span style={{ color: '#d4d4d4' }}>= pd.read_sql(</span><span style={{ color: '#ce9178' }}>"SELECT * FROM minetrack_cycles WHERE status='DOWN'"</span><span style={{ color: '#d4d4d4' }}>)</span><br />
-                  <span style={{ color: '#4ec9b0' }}>anomalias</span> <span style={{ color: '#d4d4d4' }}>= detectar_gargalo(df_fms, tempo_limite=</span><span style={{ color: '#b5cea8' }}>45</span><span style={{ color: '#d4d4d4' }}>)</span><br /><br />
-                  <span style={{ color: '#c586c0' }}>print</span><span style={{ color: '#d4d4d4' }}>(</span><span style={{ color: '#d4d4d4' }}>f</span><span style={{ color: '#ce9178' }}>"Ociosidade reduzida: &#x7B;</span><span style={{ color: '#9cdcfe' }}>anomalias.impacto_caixa</span><span style={{ color: '#ce9178' }}>&#x7D; M$"</span><span style={{ color: '#d4d4d4' }}>)</span>
+            <div className="proj-visual">
+              <div
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '10px',
+                  letterSpacing: '2.5px',
+                  color: 'var(--accent-bright)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+              >
+                <ShieldCheck size={15} />
+                ARQUITETURA DO MOTOR HEURÍSTICO
+              </div>
+
+              <div className="pipeline-list">
+                <div className="pipeline-step">
+                  <span className="pipeline-num">01</span>
+                  <div>
+                    <div className="pipeline-title">PARSING TABULAR &amp; TAXONOMIA REGEX</div>
+                    <div className="pipeline-desc">
+                      Ingestão de apontamentos brutos do FMS e classificação autônoma entre estados produtivos,
+                      ociosos ou justificáveis.
+                    </div>
+                  </div>
+                </div>
+                <div className="pipeline-step">
+                  <span className="pipeline-num">02</span>
+                  <div>
+                    <div className="pipeline-title">INTERSEÇÕES EM UNIX TIMESTAMPS</div>
+                    <div className="pipeline-desc">
+                      Base matemática absoluta que detecta sobreposição com intervalos obrigatórios e trocas de
+                      turno, suprimindo falsos positivos.
+                    </div>
+                  </div>
+                </div>
+                <div className="pipeline-step">
+                  <span className="pipeline-num">03</span>
+                  <div>
+                    <div className="pipeline-title">MEMÓRIA INTERDIÁRIA (D-1) &amp; BUFFERS</div>
+                    <div className="pipeline-desc">
+                      Consulta o último registro cronológico do dia anterior para herdar justificativas contínuas
+                      em operações 24/7.
+                    </div>
+                  </div>
+                </div>
+                <div className="pipeline-step">
+                  <span className="pipeline-num">04</span>
+                  <div>
+                    <div className="pipeline-title">FILTRO DE INATIVIDADE PROLONGADA</div>
+                    <div className="pipeline-desc">
+                      Descarta equipamentos ociosos de longo prazo para evitar poluição estatística das métricas de
+                      garantia técnica.
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div>
-                <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '8px', letterSpacing: '3px', color: 'var(--muted2)', marginBottom: '14px' }}>ROADMAP DO PROJETO</div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent)', boxShadow: '0 0 8px var(--accent-glow)', flexShrink: 0 }}></div><div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '9px', letterSpacing: '1px', color: 'var(--text-muted)' }}>Coleta e estruturação de dados históricos</div></div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent)', boxShadow: '0 0 8px var(--accent-glow)', flexShrink: 0 }}></div><div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '9px', letterSpacing: '1px', color: 'var(--text-muted)' }}>Pré-processamento e limpeza dos dados</div></div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent)', flexShrink: 0, animation: 'kdd-pulse 1.5s ease-in-out infinite' }}></div><div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '9px', letterSpacing: '1px', color: 'var(--accent)' }}>Mineração e identificação de padrões ← atual</div></div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', opacity: .38 }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', border: '1px solid var(--border)', flexShrink: 0 }}></div><div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '9px', letterSpacing: '1px', color: 'var(--muted)' }}>Modelos preditivos de produtividade</div></div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', opacity: .38 }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', border: '1px solid var(--border)', flexShrink: 0 }}></div><div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '9px', letterSpacing: '1px', color: 'var(--muted)' }}>Automação de diagnósticos operacionais</div></div>
+              <a
+                href="#lab"
+                onClick={() => onOpenLabTab('bre')}
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '11px',
+                  letterSpacing: '1.8px',
+                  color: 'var(--accent-bright)',
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                }}
+              >
+                TESTAR MOTOR BRE NO LAB AO VIVO
+                <ArrowUpRight size={14} />
+              </a>
+            </div>
+          </div>
+        </article>
+
+        {/* PROJETO 2: SHORT INTERVAL CONTROL (SIC) */}
+        <article className="proj-card reveal">
+          <div className="ca ca-tl" />
+          <div className="ca ca-tr" />
+          <div className="ca ca-bl" />
+          <div className="ca ca-br" />
+          <div className="proj-inner">
+            <div className="proj-info">
+              <div className="proj-header-row">
+                <span className="proj-tech">HTML5 · CSS3 · JAVASCRIPT · MINETRACK</span>
+                <span className="proj-status prod">● EM PRODUÇÃO · BEMISA</span>
+              </div>
+              <h3 className="proj-title">Short Interval Control (SIC) — Sistema de Controle Operacional</h3>
+              <div className="proj-sub">INTEGRADO AO DESPACHO · JAN 2026 — O MOMENTO · CCO MINA PEDRA BRANCA</div>
+
+              <p className="proj-desc">
+                Sistema de Informação de Controle baseado na metodologia de{' '}
+                <strong>Short Interval Control (SIC)</strong>, desenvolvido do zero e aplicado ao CCO da Mina Pedra
+                Branca. Integra dados operacionais do sistema de despacho (<strong>MineTrack / Sodep</strong>) para
+                acompanhamento em tempo real da produção em janelas horárias.
+              </p>
+              <p className="proj-desc">
+                Automatiza o cálculo de tonelagem por <strong>litologia e tipo de equipamento</strong>, realiza
+                controle de metas, projeção de fechamento de turno, eficiência e registro estruturado de paradas
+                operacionais — com dashboards de KPIs, timeline produtiva, consolidação por hora/turno e auto-save.
+              </p>
+
+              <div className="proj-tags" style={{ marginTop: '24px' }}>
+                {[
+                  'SHORT INTERVAL CONTROL',
+                  'MINETRACK INTEGRATION',
+                  'KPI DASHBOARD',
+                  'TIMELINE PRODUTIVA',
+                  'CONTROLE POR LITOLOGIA',
+                  'PIT-TO-PLANT',
+                ].map((t) => (
+                  <span key={t} className="proj-tag">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="proj-visual">
+              <div
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '10px',
+                  letterSpacing: '2.5px',
+                  color: 'var(--accent-bright)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+              >
+                <TrendingUp size={15} />
+                PREVIEW DE TELEMETRIA SIC
+              </div>
+
+              <div className="mock-strip">
+                <div className="mock-row">
+                  <div className="mock-cell">
+                    <div className="mock-lbl">PRODUÇÃO ACUM.</div>
+                    <div className="mock-val">
+                      2.840<span style={{ fontSize: '12px', color: 'var(--text-muted)' }}> t</span>
+                    </div>
+                  </div>
+                  <div className="mock-cell">
+                    <div className="mock-lbl">META TURNO</div>
+                    <div className="mock-val" style={{ color: 'var(--text-main)' }}>
+                      3.200<span style={{ fontSize: '12px', color: 'var(--text-muted)' }}> t</span>
+                    </div>
+                  </div>
+                  <div className="mock-cell">
+                    <div className="mock-lbl">ADERÊNCIA</div>
+                    <div className="mock-val" style={{ color: 'var(--amber)' }}>
+                      88<span style={{ fontSize: '12px', color: 'var(--text-muted)' }}> %</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="mock-row">
+                  <div className="mock-cell">
+                    <div className="mock-lbl">DISP. FÍSICA</div>
+                    <div className="mock-val" style={{ color: '#6ee7b7' }}>
+                      91<span style={{ fontSize: '12px', color: 'var(--text-muted)' }}> %</span>
+                    </div>
+                  </div>
+                  <div className="mock-cell">
+                    <div className="mock-lbl">UTIL. FÍSICA</div>
+                    <div className="mock-val">
+                      84<span style={{ fontSize: '12px', color: 'var(--text-muted)' }}> %</span>
+                    </div>
+                  </div>
+                  <div className="mock-cell">
+                    <div className="mock-lbl">FROTA ATIVA</div>
+                    <div className="mock-val">
+                      7<span style={{ fontSize: '12px', color: 'var(--text-muted)' }}> / 8</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div>
-                <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '8px', letterSpacing: '3px', color: 'var(--muted2)', marginBottom: '14px' }}>IMPACTOS ESPERADOS</div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  <div style={{ background: 'var(--panel2)', border: '1px solid var(--border)', borderRadius: '3px', padding: '10px 14px', borderLeft: '2px solid var(--accent)' }}><div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '8px', letterSpacing: '2px', color: 'var(--accent)', marginBottom: '3px' }}>REDUÇÃO DE CUSTO UNITÁRIO</div><div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Identificação de ciclos anômalos que elevam o custo hora-máquina por tonelagem movida</div></div>
-                  <div style={{ background: 'var(--panel2)', border: '1px solid var(--border)', borderRadius: '3px', padding: '10px 14px', borderLeft: '2px solid var(--accent)' }}><div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '8px', letterSpacing: '2px', color: 'var(--accent)', marginBottom: '3px' }}>ELIMINAÇÃO DE GARGALOS RECORRENTES</div><div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Diagnóstico automático de frentes e equipamentos com padrões sistemáticos de baixo desempenho</div></div>
-                  <div style={{ background: 'var(--panel2)', border: '1px solid var(--border)', borderRadius: '3px', padding: '10px 14px', borderLeft: '2px solid var(--accent)' }}><div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '8px', letterSpacing: '2px', color: 'var(--accent)', marginBottom: '3px' }}>ANTECIPAÇÃO DE DESVIOS</div><div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Modelos preditivos para antecipar quedas de produtividade antes que gerem impacto no resultado do turno</div></div>
+
+              <div className="mock-bars">
+                <div
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '9.5px',
+                    letterSpacing: '2px',
+                    color: 'var(--text-muted)',
+                  }}
+                >
+                  PRODUÇÃO POR LITOLOGIA
                 </div>
+                <div className="mock-bar-row">
+                  <div className="mock-bar-lbl">HEM</div>
+                  <div className="mock-bar-track">
+                    <div
+                      className="mock-bar-fill"
+                      style={{ '--w': '78%', background: 'linear-gradient(90deg, #0ea5c6, #38e2fa)' } as CSSProperties}
+                    />
+                  </div>
+                  <div className="mock-bar-pct">78%</div>
+                </div>
+                <div className="mock-bar-row">
+                  <div className="mock-bar-lbl">GOE</div>
+                  <div className="mock-bar-track">
+                    <div
+                      className="mock-bar-fill"
+                      style={{ '--w': '56%', background: 'linear-gradient(90deg, #d97706, #fbbf24)' } as CSSProperties}
+                    />
+                  </div>
+                  <div className="mock-bar-pct">56%</div>
+                </div>
+                <div className="mock-bar-row">
+                  <div className="mock-bar-lbl">EST</div>
+                  <div className="mock-bar-track">
+                    <div
+                      className="mock-bar-fill"
+                      style={{ '--w': '42%', background: 'linear-gradient(90deg, #059669, #34d399)' } as CSSProperties}
+                    />
+                  </div>
+                  <div className="mock-bar-pct">42%</div>
+                </div>
+              </div>
+
+              <div
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '10px',
+                  letterSpacing: '1.5px',
+                  color: 'var(--text-muted)',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: '8px',
+                }}
+              >
+                <span>● MINETRACK INTEGRADO · AUTO-SAVE</span>
+                <a
+                  href="#lab"
+                  onClick={() => onOpenLabTab('sic')}
+                  style={{ color: 'var(--accent-bright)', textDecoration: 'none' }}
+                >
+                  SIMULAR TURNO ↗
+                </a>
               </div>
             </div>
           </div>
-        </div>
+        </article>
+
+        {/* PROJETO 3: KDD COM PYTHON */}
+        <article className="proj-card amber reveal">
+          <div className="ca ca-tl" />
+          <div className="ca ca-tr" />
+          <div className="ca ca-bl" />
+          <div className="ca ca-br" />
+          <div className="proj-inner">
+            <div className="proj-info">
+              <div className="proj-header-row">
+                <span className="proj-tech" style={{ color: '#fbbf24', borderColor: 'var(--amber-border)', background: 'var(--amber-bg)' }}>
+                  PYTHON · KDD · DATA MINING
+                </span>
+                <span className="proj-status dev">◐ EM DESENVOLVIMENTO</span>
+              </div>
+              <h3 className="proj-title">Análise e Otimização de Produção em Mina com Python (KDD)</h3>
+              <div className="proj-sub" style={{ color: '#fbbf24' }}>
+                KNOWLEDGE DISCOVERY IN DATABASES · NOV 2025 — O MOMENTO
+              </div>
+
+              <p className="proj-desc">
+                Desenvolvimento de um sistema de análise de despacho baseado em técnicas de{' '}
+                <strong>KDD (Knowledge Discovery in Databases)</strong>, com foco na otimização da operação de mina
+                a partir de dados históricos (não simultâneos).
+              </p>
+              <p className="proj-desc">
+                Automatiza a descoberta de padrões ocultos — ciclos anômalos de transporte, frentes com baixa
+                produtividade recorrente e equipamentos com alta indisponibilidade não planejada — traduzindo cada
+                gargalo em impacto direto de custo hora-máquina e tonelagem movimentada.
+              </p>
+              <p className="proj-desc">
+                <strong>Status atual:</strong> em evolução para <strong>modelos preditivos</strong> de
+                produtividade e <strong>automação de diagnósticos operacionais</strong>.
+              </p>
+
+              <div className="proj-tags" style={{ marginTop: '24px' }}>
+                {[
+                  'PYTHON',
+                  'KDD',
+                  'DATA MINING',
+                  'DIAGNÓSTICO AUTOMÁTICO',
+                  'MODELOS PREDITIVOS',
+                  'ANÁLISE DE CUSTO',
+                ].map((t) => (
+                  <span key={t} className="proj-tag">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="proj-visual">
+              <div className="code-terminal">
+                <div className="code-terminal-bar">
+                  <div className="code-dots">
+                    <span />
+                    <span />
+                    <span />
+                  </div>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                    <Code size={12} />
+                    kdd_fleet_diagnostics.py
+                  </span>
+                </div>
+                <div className="code-body">
+                  <div style={{ color: '#64748b' }}># Descoberta de ciclos anômalos em base histórica FMS</div>
+                  <div>
+                    <span style={{ color: '#38bdf8' }}>import</span> pandas <span style={{ color: '#38bdf8' }}>as</span> pd
+                  </div>
+                  <div>
+                    <span style={{ color: '#34d399' }}>df_cycles</span> = pd.read_parquet(
+                    <span style={{ color: '#fbbf24' }}>&quot;minetrack_history.parquet&quot;</span>)
+                  </div>
+                  <div>
+                    <span style={{ color: '#34d399' }}>gargalos</span> = detectar_anomalias(df_cycles, z_thresh=
+                    <span style={{ color: '#f472b6' }}>2.5</span>)
+                  </div>
+                  <div style={{ marginTop: '6px' }}>
+                    <span style={{ color: '#c084fc' }}>print</span>(f
+                    <span style={{ color: '#fbbf24' }}>
+                      &quot;Gargalos críticos: &#123;len(gargalos)&#125; | Perda est.: &#123;gargalos.ton_lost:.0f&#125; t&quot;
+                    </span>
+                    )
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '10px',
+                    letterSpacing: '2.5px',
+                    color: 'var(--text-muted)',
+                    marginBottom: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                  }}
+                >
+                  <Terminal size={13} color="var(--amber)" />
+                  ROADMAP KDD
+                </div>
+                <div className="roadmap-list">
+                  <div className="roadmap-item">
+                    <span className="rm-dot done" />
+                    Coleta e estruturação de dados históricos de despacho
+                  </div>
+                  <div className="roadmap-item">
+                    <span className="rm-dot done" />
+                    Pré-processamento, higienização e engenharia de atributos
+                  </div>
+                  <div className="roadmap-item current">
+                    <span className="rm-dot current" />
+                    Mineração de padrões e detecção de gargalos ← atual
+                  </div>
+                  <div className="roadmap-item pending">
+                    <span className="rm-dot pending" />
+                    Modelos preditivos de queda de produtividade
+                  </div>
+                  <div className="roadmap-item pending">
+                    <span className="rm-dot pending" />
+                    Automação de diagnósticos operacionais por turno
+                  </div>
+                </div>
+              </div>
+
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '10px',
+                  color: 'var(--text-muted)',
+                }}
+              >
+                <Briefcase size={13} color="var(--amber)" />
+                FOCO: REDUÇÃO DE CUSTO HORA-MÁQUINA &amp; PREVISIBILIDADE
+              </div>
+            </div>
+          </div>
+        </article>
       </div>
     </section>
   );

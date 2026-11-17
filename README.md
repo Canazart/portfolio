@@ -1,73 +1,26 @@
-# React + TypeScript + Vite
+# Leonardo Canazart — Portfólio · Engenharia de Minas & Inteligência Operacional
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Portfólio interativo de **Leonardo Canazart**, graduando em Engenharia de Minas pela **UEMG (8° Período)** e **Técnico de Sala de Controle I na Bemisa — Mina Pedra Branca**.
 
-Currently, two official plugins are available:
+## Destaques
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Trajetória Atualizada**: Promoção na Bemisa (*Operador de Sala de Controle → Técnico de Sala de Controle I*), além das experiências em ArcelorMittal Brasil, PH Intralogística e Construtora Helmo.
+- **Projetos em Destaque**:
+  - **Algoritmo de Validação Heurística e Auditoria de Frota (Custom BRE)** — Business Rule Engine client-side em JS ES6+, Regex, Unix Timestamps e memória interdiária (D-1).
+  - **Short Interval Control (SIC)** — Controle operacional por intervalo integrado ao MineTrack (Sodep).
+  - **Análise e Otimização de Produção em Mina com Python (KDD)** — Data Mining aplicado a bases históricas de despacho.
+- **Lab Operacional ao Vivo**: Simulador interativo do **SIC** (com gráfico Recharts, litologia, frota e eventos) e motor **Custom BRE** rodando diretamente no navegador.
 
-## React Compiler
+## Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React 19 + TypeScript + Vite
+- Recharts + Lucide Icons
+- Deploy automatizado via GitHub Actions (`.github/workflows/deploy.yml`) para GitHub Pages.
 
-## Expanding the ESLint configuration
+## Desenvolvimento local
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
+npm run build
 ```
