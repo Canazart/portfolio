@@ -1,29 +1,44 @@
 import { useEffect, useState } from 'react';
 import Nav from './components/Nav';
-import type { ThemeMode } from './components/Nav';
 import Hero from './components/Hero';
-import Solutions from './components/Solutions';
-import { About, Skills, Education } from './components/AboutAndSkills';
+import { About, Education } from './components/AboutAndSkills';
 import { Experience, Projects } from './components/ExperienceAndProjects';
 import SicDemo from './components/SicDemo';
 import type { LabTab } from './components/SicDemo';
 import { Contact, Footer } from './components/Contact';
+import { TRANSLATIONS } from './i18n';
+import type { Lang } from './i18n';
 
-const SECTION_IDS = ['solutions', 'about', 'experience', 'projects', 'lab', 'skills', 'education', 'contact'];
+const SECTION_IDS = ['about', 'experience', 'projects', 'lab', 'education', 'contact'];
+
+function getInitialLang(): Lang {
+  try {
+    const saved = window.localStorage.getItem('portfolio_lang');
+    if (saved === 'pt' || saved === 'en' || saved === 'es' || saved === 'zh') {
+      return saved;
+    }
+  } catch {
+    // ignore storage errors
+  }
+  return 'pt';
+}
 
 function App() {
-  const [scrollPct, setScrollPct] = useState(0);
   const [activeSection, setActiveSection] = useState('');
   const [labTab, setLabTab] = useState<LabTab>('bre');
-  const [theme, setTheme] = useState<ThemeMode>('cyan');
+  const [lang, setLang] = useState<Lang>(getInitialLang);
+
+  const t = TRANSLATIONS[lang];
 
   useEffect(() => {
-    if (theme === 'gold') {
-      document.documentElement.setAttribute('data-theme', 'gold');
-    } else {
-      document.documentElement.removeAttribute('data-theme');
+    document.documentElement.lang = t.htmlLang;
+    document.title = t.pageTitle;
+    try {
+      window.localStorage.setItem('portfolio_lang', lang);
+    } catch {
+      // ignore storage errors
     }
-  }, [theme]);
+  }, [lang, t.htmlLang, t.pageTitle]);
 
   useEffect(() => {
     const obs = new IntersectionObserver(
@@ -35,16 +50,12 @@ function App() {
           }
         });
       },
-      { threshold: 0.08, rootMargin: '0px 0px -30px 0px' }
+      { threshold: 0.08, rootMargin: '0px 0px -24px 0px' }
     );
 
     document.querySelectorAll('.reveal').forEach((el) => obs.observe(el));
 
     const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      setScrollPct(docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0);
-
       let current = '';
       for (const id of SECTION_IDS) {
         const el = document.getElementById(id);
@@ -66,33 +77,23 @@ function App() {
 
   return (
     <>
-      <div className="scroll-progress" style={{ width: `${scrollPct}%` }} aria-hidden="true" />
-      <div className="scanline" aria-hidden="true" />
-      <Nav
-        activeSection={activeSection}
-        theme={theme}
-        onToggleTheme={() => setTheme((prev) => (prev === 'cyan' ? 'gold' : 'cyan'))}
-      />
+      <Nav activeSection={activeSection} lang={lang} onLangChange={setLang} t={t} />
       <main>
-        <Hero />
+        <Hero t={t} />
         <div className="divider" />
-        <Solutions />
+        <About t={t} />
         <div className="divider" />
-        <About />
+        <Experience t={t} />
         <div className="divider" />
-        <Experience />
+        <Projects onOpenLabTab={setLabTab} t={t} />
         <div className="divider" />
-        <Projects onOpenLabTab={setLabTab} />
+        <SicDemo activeTab={labTab} onTabChange={setLabTab} lang={lang} t={t} />
         <div className="divider" />
-        <SicDemo activeTab={labTab} onTabChange={setLabTab} />
-        <div className="divider" />
-        <Skills />
-        <div className="divider" />
-        <Education />
+        <Education t={t} />
       </main>
       <div className="divider" />
-      <Contact />
-      <Footer />
+      <Contact t={t} />
+      <Footer t={t} />
     </>
   );
 }

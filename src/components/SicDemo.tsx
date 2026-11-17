@@ -19,43 +19,57 @@ import {
   Legend,
 } from 'recharts';
 import BreSimulator from './BreSimulator';
+import type { Lang, Translation } from '../i18n';
 
 export type LabTab = 'bre' | 'sic';
 
 interface SicDemoProps {
   activeTab: LabTab;
   onTabChange: (tab: LabTab) => void;
+  lang: Lang;
+  t: Translation;
 }
 
 const META = 3200;
 const INTERVAL_MS = 3500;
 
 interface HoraData {
-  label: string;
+  start: string;
+  end: string;
   hem: number;
   goe: number;
   df: number;
   cam: number;
-  eventos: string[];
+  eventType: 'ok' | 'warn' | 'bad';
   isBreak?: boolean;
 }
 
 const HORAS: HoraData[] = [
-  { label: '07:00–08:00', hem: 215, goe: 118, df: 91, cam: 7, eventos: ['Turno A iniciado · Frota sincronizada no MineTrack'] },
-  { label: '08:00–09:00', hem: 232, goe: 122, df: 92, cam: 7, eventos: ['Produção acima da meta horária (354 t)'] },
-  { label: '09:00–10:00', hem: 190, goe: 88, df: 86, cam: 6, eventos: ['CB-03 em manutenção corretiva · Rebalanceamento de fila'] },
-  { label: '10:00–11:00', hem: 244, goe: 132, df: 91, cam: 7, eventos: ['Recuperação de ritmo · Frente Sul em alta produtividade'] },
-  { label: '11:00–12:00', hem: 224, goe: 112, df: 91, cam: 7, eventos: ['Ritmo estabilizado dentro da aderência'] },
-  { label: '12:00–12:30', hem: 0, goe: 0, df: 91, cam: 7, eventos: ['Intervalo operacional de almoço'], isBreak: true },
-  { label: '12:30–13:30', hem: 206, goe: 104, df: 88, cam: 6, eventos: ['Retomada pós-almoço · CB-03 em inspeção final'] },
-  { label: '13:30–14:30', hem: 252, goe: 138, df: 95, cam: 8, eventos: ['Frota completa (8/8) · Pico produtivo do turno'] },
-  { label: '14:30–15:00', hem: 126, goe: 68, df: 95, cam: 8, eventos: ['Fechamento de turno acima da meta projetada'] },
+  { start: '07:00', end: '08:00', hem: 215, goe: 118, df: 91, cam: 7, eventType: 'ok' },
+  { start: '08:00', end: '09:00', hem: 232, goe: 122, df: 92, cam: 7, eventType: 'ok' },
+  { start: '09:00', end: '10:00', hem: 190, goe: 88, df: 86, cam: 6, eventType: 'bad' },
+  { start: '10:00', end: '11:00', hem: 244, goe: 132, df: 91, cam: 7, eventType: 'warn' },
+  { start: '11:00', end: '12:00', hem: 224, goe: 112, df: 91, cam: 7, eventType: 'ok' },
+  { start: '12:00', end: '12:30', hem: 0, goe: 0, df: 91, cam: 7, eventType: 'warn', isBreak: true },
+  { start: '12:30', end: '13:30', hem: 206, goe: 104, df: 88, cam: 6, eventType: 'warn' },
+  { start: '13:30', end: '14:30', hem: 252, goe: 138, df: 95, cam: 8, eventType: 'ok' },
+  { start: '14:30', end: '15:00', hem: 126, goe: 68, df: 95, cam: 8, eventType: 'ok' },
 ];
 
 const EQUIPAMENTOS = ['CB-01', 'CB-02', 'CB-03', 'CB-04', 'CB-05', 'CB-06', 'CB-07', 'CB-08'];
 const DOWN_HORAS: Record<number, string[]> = { 2: ['CB-03'], 6: ['CB-03'] };
 
-export default function SicDemo({ activeTab, onTabChange }: SicDemoProps) {
+const LOCALE_MAP: Record<Lang, string> = {
+  pt: 'pt-BR',
+  en: 'en-US',
+  es: 'es-ES',
+  zh: 'zh-CN',
+};
+
+export default function SicDemo({ activeTab, onTabChange, lang, t }: SicDemoProps) {
+  const ts = t.sic;
+  const locale = LOCALE_MAP[lang];
+
   const [playing, setPlaying] = useState(false);
   const [horaAtual, setHoraAtual] = useState(3);
   const [cdSec, setCdSec] = useState(0);
@@ -142,20 +156,14 @@ export default function SicDemo({ activeTab, onTabChange }: SicDemoProps) {
     }
 
     chartData.push({
-      name: hr.label.split('–')[0],
+      name: hr.start,
       HEM: hr.hem,
       GOE: hr.goe,
     });
 
-    hr.eventos.forEach((ev) => {
-      const lower = ev.toLowerCase();
-      const type =
-        lower.includes('manutenção') || lower.includes('desvio')
-          ? 'bad'
-          : lower.includes('recup') || lower.includes('retomada') || lower.includes('almoço')
-          ? 'warn'
-          : 'ok';
-      allEvents.unshift({ ev, type });
+    const evList = ts.events[i] || [];
+    evList.forEach((ev) => {
+      allEvents.unshift({ ev, type: hr.eventType });
     });
   }
 
@@ -177,18 +185,12 @@ export default function SicDemo({ activeTab, onTabChange }: SicDemoProps) {
   return (
     <section className="section" id="lab">
       <div className="sec-header reveal">
-        <div className="sec-label">DEMONSTRAÇÕES INTERATIVAS</div>
-        <h2 className="sec-title">
-          Lab Operacional <span>ao Vivo</span>
-        </h2>
-        <p className="sec-subtitle">
-          Teste diretamente no navegador os dois sistemas construídos para o CCO da Bemisa: o motor editável de{' '}
-          <strong>Auditoria Heurística de Frota (Custom BRE · R0–R7)</strong> e o simulador horário de{' '}
-          <strong>Short Interval Control (SIC)</strong>.
-        </p>
+        <div className="sec-kicker">{t.lab.kicker}</div>
+        <h2 className="sec-title">{t.lab.title}</h2>
+        <p className="sec-subtitle">{t.lab.subtitle}</p>
       </div>
 
-      <div className="lab-tabs reveal" role="tablist" aria-label="Selecionar demonstração">
+      <div className="lab-tabs reveal" role="tablist" aria-label={t.lab.ariaTabs}>
         <button
           type="button"
           role="tab"
@@ -196,8 +198,8 @@ export default function SicDemo({ activeTab, onTabChange }: SicDemoProps) {
           className={`lab-tab ${activeTab === 'bre' ? 'active' : ''}`}
           onClick={() => onTabChange('bre')}
         >
-          <ShieldCheck size={14} />
-          CUSTOM BRE · AUDITORIA R0–R7
+          <ShieldCheck size={15} />
+          {t.lab.tabBre}
         </button>
         <button
           type="button"
@@ -206,114 +208,58 @@ export default function SicDemo({ activeTab, onTabChange }: SicDemoProps) {
           className={`lab-tab ${activeTab === 'sic' ? 'active' : ''}`}
           onClick={() => onTabChange('sic')}
         >
-          <Activity size={14} />
-          SIC · CONTROLE HORÁRIO
+          <Activity size={15} />
+          {t.lab.tabSic}
         </button>
       </div>
 
       <div className="reveal">
         {activeTab === 'bre' ? (
-          <BreSimulator />
+          <BreSimulator t={t} />
         ) : (
           <div className="lab-shell">
-            <div className="ca ca-tl" />
-            <div className="ca ca-tr" />
-            <div className="ca ca-bl" />
-            <div className="ca ca-br" />
-
-            {/* HEADER */}
-            <div className="sic-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 180 200"
-                  style={{ filter: 'drop-shadow(0 0 6px var(--accent-glow))' }}
-                >
-                  <polygon points="90,10 160,50 90,90 20,50" fill="var(--accent)" opacity="0.5" />
-                  <polygon points="20,50 90,90 90,170 20,130" fill="var(--accent2)" opacity="0.32" />
-                  <polygon points="160,50 90,90 90,170 160,130" fill="var(--accent)" opacity="0.22" />
-                </svg>
-                <div>
-                  <div
-                    style={{
-                      fontFamily: 'var(--font-display)',
-                      fontSize: '16px',
-                      fontWeight: 700,
-                      letterSpacing: '2px',
-                      color: 'var(--accent-bright)',
-                    }}
-                  >
-                    SHORT INTERVAL CONTROL (SIC)
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '9.5px',
-                      letterSpacing: '1.5px',
-                      color: 'var(--text-muted)',
-                    }}
-                  >
-                    SIMULAÇÃO DE TURNO COM DADOS FICTÍCIOS · CCO MINA PEDRA BRANCA
-                  </div>
-                </div>
+            <div className="lab-bar">
+              <div>
+                <div className="lab-bar-title">{ts.title}</div>
+                <div className="lab-bar-sub">{ts.subtitle}</div>
               </div>
               <div style={{ textAlign: 'right' }}>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: '24px',
-                    fontWeight: 700,
-                    color: 'var(--text-main)',
-                    letterSpacing: '2px',
-                    lineHeight: 1,
-                  }}
-                >
-                  {horaAtual >= HORAS.length ? '15:00' : nextH.label.split('–')[0]}
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '18px', fontWeight: 600, color: 'var(--text)' }}>
+                  {horaAtual >= HORAS.length ? '15:00' : nextH.start}
                 </div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '9.5px',
-                    letterSpacing: '1.5px',
-                    color: 'var(--accent)',
-                  }}
-                >
-                  TURNO A · JANELA {horaAtual} / {HORAS.length}
-                </div>
+                <div className="lab-bar-sub">{ts.shiftWindow(horaAtual, HORAS.length)}</div>
               </div>
             </div>
 
-            {/* KPI STRIP */}
             <div className="sic-kpi-strip">
               <div className="sic-kpi">
-                <div className="sic-kpi-lbl">PRODUÇÃO ACUM.</div>
-                <div className="sic-kpi-val">{prodAcum.toLocaleString('pt-BR')}</div>
-                <div className="sic-kpi-u">toneladas</div>
+                <div className="sic-kpi-lbl">{ts.kpiAccum}</div>
+                <div className="sic-kpi-val">{prodAcum.toLocaleString(locale)}</div>
+                <div className="sic-kpi-u">{ts.tons}</div>
               </div>
               <div className="sic-kpi">
-                <div className="sic-kpi-lbl">PROJEÇÃO TURNO</div>
+                <div className="sic-kpi-lbl">{ts.kpiProj}</div>
                 <div
                   className="sic-kpi-val"
                   style={{
-                    color: horaAtual === 0 ? 'var(--text-muted)' : estimativa >= META ? '#6ee7b7' : '#fda4af',
+                    color: horaAtual === 0 ? 'var(--text-muted)' : estimativa >= META ? 'var(--ok)' : 'var(--danger)',
                   }}
                 >
-                  {horaAtual === 0 ? '—' : estimativa.toLocaleString('pt-BR')}
+                  {horaAtual === 0 ? '0' : estimativa.toLocaleString(locale)}
                 </div>
                 <div
                   className="sic-kpi-u"
                   style={{
-                    color: horaAtual === 0 ? 'var(--text-dim)' : estimativa >= META ? '#6ee7b7' : '#fda4af',
+                    color: horaAtual === 0 ? 'var(--text-dim)' : estimativa >= META ? 'var(--ok)' : 'var(--danger)',
                   }}
                 >
                   {horaAtual === 0
-                    ? 'aguardando dados'
-                    : `${estimativa >= META ? '+' : ''}${(estimativa - META).toLocaleString('pt-BR')} t vs meta`}
+                    ? ts.waitingData
+                    : `${estimativa >= META ? '+' : ''}${(estimativa - META).toLocaleString(locale)} ${ts.vsTarget}`}
                 </div>
               </div>
               <div className="sic-kpi">
-                <div className="sic-kpi-lbl">ADERÊNCIA</div>
+                <div className="sic-kpi-lbl">{ts.kpiAdherence}</div>
                 <div
                   className="sic-kpi-val"
                   style={{
@@ -321,83 +267,72 @@ export default function SicDemo({ activeTab, onTabChange }: SicDemoProps) {
                       horaAtual === 0
                         ? 'var(--text-muted)'
                         : aderGlobal >= 95
-                        ? '#6ee7b7'
+                        ? 'var(--ok)'
                         : aderGlobal >= 82
-                        ? '#fbbf24'
-                        : '#fda4af',
+                        ? 'var(--warn)'
+                        : 'var(--danger)',
                   }}
                 >
                   {horaAtual === 0 ? '0' : aderGlobal}%
                 </div>
-                <div className="sic-kpi-u">à meta horária</div>
+                <div className="sic-kpi-u">{ts.toHourlyTarget}</div>
               </div>
               <div className="sic-kpi">
-                <div className="sic-kpi-lbl">DISP. FÍSICA</div>
-                <div className="sic-kpi-val" style={{ color: 'var(--accent-bright)' }}>
-                  {df}%
-                </div>
-                <div className="sic-kpi-u">frota ativa</div>
+                <div className="sic-kpi-lbl">{ts.kpiPa}</div>
+                <div className="sic-kpi-val">{df}%</div>
+                <div className="sic-kpi-u">{ts.activeFleet}</div>
               </div>
               <div className="sic-kpi">
-                <div className="sic-kpi-lbl">CAMINHÕES</div>
-                <div className="sic-kpi-val" style={{ color: 'var(--text-main)' }}>
-                  {cam} / 8
-                </div>
-                <div className="sic-kpi-u">em operação</div>
+                <div className="sic-kpi-lbl">{ts.kpiTrucks}</div>
+                <div className="sic-kpi-val">{cam} / 8</div>
+                <div className="sic-kpi-u">{ts.operating}</div>
               </div>
             </div>
 
-            {/* META PROGRESS BAR */}
-            <div style={{ padding: '14px 24px', borderBottom: '1px solid var(--border-light)' }}>
+            <div style={{ padding: '14px 24px', borderBottom: '1px solid var(--border)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '7px' }}>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '2px', color: 'var(--text-muted)' }}>
-                  PROGRESSO DA META DO TURNO · 3.200 t
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--text-muted)' }}>
+                  {ts.targetProgress}
                 </div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '1.5px', color: 'var(--accent-bright)' }}>
-                  {pctMeta}% concluído
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--text)' }}>
+                  {pctMeta}% {ts.completed}
                 </div>
               </div>
-              <div style={{ height: '7px', background: 'rgba(148,163,184,0.14)', borderRadius: '999px', overflow: 'hidden' }}>
+              <div style={{ height: '6px', background: 'rgba(201,162,75,0.14)', borderRadius: '999px', overflow: 'hidden' }}>
                 <div
                   style={{
                     height: '100%',
                     width: `${pctMeta}%`,
-                    background:
-                      pctMeta >= 85
-                        ? 'linear-gradient(90deg, var(--accent2), #34d399)'
-                        : pctMeta >= 55
-                        ? 'linear-gradient(90deg, var(--accent2), var(--accent-bright))'
-                        : 'linear-gradient(90deg, #d97706, #fbbf24)',
-                    transition: 'width 0.7s ease',
+                    background: pctMeta >= 85 ? 'var(--ok)' : 'var(--accent-signal)',
+                    transition: 'width 0.5s ease',
                   }}
                 />
               </div>
             </div>
 
-            {/* BODY */}
             <div className="sic-body">
               <div className="sic-main-col">
                 {horaAtual > 0 && (
                   <div style={{ height: '185px', width: '100%' }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={chartData} margin={{ top: 6, right: 6, left: -18, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.12)" vertical={false} />
-                        <XAxis dataKey="name" stroke="#849bb3" fontSize={10} tick={{ fontFamily: 'JetBrains Mono, monospace' }} />
-                        <YAxis stroke="#849bb3" fontSize={10} tick={{ fontFamily: 'JetBrains Mono, monospace' }} />
+                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(201,162,75,0.12)" vertical={false} />
+                        <XAxis dataKey="name" stroke="#8f8c83" fontSize={11} tick={{ fontFamily: 'JetBrains Mono, monospace' }} />
+                        <YAxis stroke="#8f8c83" fontSize={11} tick={{ fontFamily: 'JetBrains Mono, monospace' }} />
                         <Tooltip
-                          cursor={{ fill: 'rgba(20, 184, 212, 0.08)' }}
+                          cursor={{ fill: 'rgba(201, 162, 75, 0.08)' }}
                           contentStyle={{
-                            backgroundColor: '#091220',
-                            border: '1px solid rgba(56, 189, 248, 0.3)',
+                            backgroundColor: '#111318',
+                            border: '1px solid rgba(201, 162, 75, 0.32)',
                             borderRadius: '6px',
-                            fontSize: '11px',
+                            fontSize: '11.5px',
                             fontFamily: 'JetBrains Mono, monospace',
-                            color: '#f1f6fb',
+                            color: '#f3f1eb',
                           }}
                         />
-                        <Legend wrapperStyle={{ fontSize: '10px', fontFamily: 'JetBrains Mono, monospace' }} />
-                        <Bar dataKey="HEM" stackId="a" fill="var(--accent)" radius={[0, 0, 0, 0]} />
-                        <Bar dataKey="GOE" stackId="a" fill="var(--amber)" radius={[3, 3, 0, 0]} />
+                        <Legend wrapperStyle={{ fontSize: '11px', fontFamily: 'JetBrains Mono, monospace' }} />
+                        <Bar dataKey="HEM" stackId="a" fill="#d6b15c" />
+                        <Bar dataKey="GOE" stackId="a" fill="#7d6940" radius={[2, 2, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
@@ -407,26 +342,27 @@ export default function SicDemo({ activeTab, onTabChange }: SicDemoProps) {
                   <table className="sic-table">
                     <thead>
                       <tr>
-                        <th className="sic-td-h" style={{ color: 'var(--text-muted)' }}>JANELA</th>
-                        <th className="sic-td-h" style={{ textAlign: 'center', color: 'var(--accent-bright)' }}>HEM</th>
-                        <th className="sic-td-h" style={{ textAlign: 'center', color: '#fbbf24' }}>GOE</th>
-                        <th className="sic-td-h" style={{ textAlign: 'center', color: 'var(--text-main)' }}>TOTAL</th>
-                        <th className="sic-td-h" style={{ textAlign: 'center', color: 'var(--text-muted)' }}>STATUS</th>
+                        <th className="sic-td-h" style={{ color: 'var(--text-muted)' }}>{ts.colWindow}</th>
+                        <th className="sic-td-h" style={{ textAlign: 'center', color: 'var(--accent-signal)' }}>HEM</th>
+                        <th className="sic-td-h" style={{ textAlign: 'center', color: 'var(--accent)' }}>GOE</th>
+                        <th className="sic-td-h" style={{ textAlign: 'center', color: 'var(--text)' }}>{ts.colTotal}</th>
+                        <th className="sic-td-h" style={{ textAlign: 'center', color: 'var(--text-muted)' }}>{ts.colStatus}</th>
                       </tr>
                     </thead>
                     <tbody>
                       {HORAS.map((hr, idx) => {
-                        let statusStr = '·';
+                        let statusStr = '...';
                         let statusColor = 'var(--text-dim)';
                         let rowClass = 'sic-tr-future';
+                        const label = `${hr.start} ${ts.timeSep} ${hr.end}`;
 
                         if (idx < horaAtual) {
                           rowClass = 'sic-tr-done';
                           if (!hr.isBreak) {
                             const tot = hr.hem + hr.goe;
                             const adH = (tot / (META / totalNonBreak)) * 100;
-                            statusStr = adH >= 85 ? '✔ OK' : adH >= 70 ? '▲ ALERTA' : '✖ DESVIO';
-                            statusColor = adH >= 85 ? '#6ee7b7' : adH >= 70 ? '#fbbf24' : '#fda4af';
+                            statusStr = adH >= 85 ? ts.statusOk : adH >= 70 ? ts.statusWarn : ts.statusDev;
+                            statusColor = adH >= 85 ? 'var(--ok)' : adH >= 70 ? 'var(--warn)' : 'var(--danger)';
                           }
                         } else if (idx === horaAtual) {
                           rowClass = 'sic-tr-active';
@@ -434,10 +370,10 @@ export default function SicDemo({ activeTab, onTabChange }: SicDemoProps) {
 
                         if (hr.isBreak) {
                           return (
-                            <tr key={hr.label} className={rowClass}>
-                              <td className="sic-td-h" style={{ color: '#fbbf24' }}>{hr.label}</td>
-                              <td className="sic-td" colSpan={4} style={{ color: '#fbbf24', letterSpacing: '1.5px', fontSize: '10px' }}>
-                                INTERVALO DE ALMOÇO
+                            <tr key={hr.start} className={rowClass}>
+                              <td className="sic-td-h" style={{ color: 'var(--warn)' }}>{label}</td>
+                              <td className="sic-td" colSpan={4} style={{ color: 'var(--warn)', fontSize: '11px' }}>
+                                {ts.breakLabel}
                               </td>
                             </tr>
                           );
@@ -445,12 +381,12 @@ export default function SicDemo({ activeTab, onTabChange }: SicDemoProps) {
 
                         const show = idx < horaAtual;
                         return (
-                          <tr key={hr.label} className={rowClass}>
-                            <td className="sic-td-h">{hr.label}</td>
-                            <td className="sic-td">{show ? hr.hem.toLocaleString('pt-BR') : '·'}</td>
-                            <td className="sic-td">{show ? hr.goe.toLocaleString('pt-BR') : '·'}</td>
-                            <td className="sic-td" style={{ fontWeight: 600 }}>
-                              {show ? (hr.hem + hr.goe).toLocaleString('pt-BR') : '·'}
+                          <tr key={hr.start} className={rowClass}>
+                            <td className="sic-td-h">{label}</td>
+                            <td className="sic-td">{show ? hr.hem.toLocaleString(locale) : '...'}</td>
+                            <td className="sic-td">{show ? hr.goe.toLocaleString(locale) : '...'}</td>
+                            <td className="sic-td" style={{ color: 'var(--text)', fontWeight: 600 }}>
+                              {show ? (hr.hem + hr.goe).toLocaleString(locale) : '...'}
                             </td>
                             <td className="sic-td" style={{ color: statusColor }}>
                               {statusStr}
@@ -465,38 +401,38 @@ export default function SicDemo({ activeTab, onTabChange }: SicDemoProps) {
 
               <div className="sic-side-col">
                 <div>
-                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '2px', color: 'var(--accent-bright)', marginBottom: '12px' }}>
-                    PRODUÇÃO ACUMULADA POR LITOLOGIA
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--text-muted)', marginBottom: '12px', textTransform: 'uppercase' }}>
+                    {ts.lithoTitle}
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px', fontFamily: 'var(--font-mono)', fontSize: '10.5px' }}>
-                        <span style={{ color: 'var(--accent-bright)' }}>HEMATITA (HEM)</span>
-                        <span style={{ color: 'var(--text-secondary)' }}>{hemAcum.toLocaleString('pt-BR')} t</span>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px', fontFamily: 'var(--font-mono)', fontSize: '11.5px' }}>
+                        <span style={{ color: 'var(--accent-signal)' }}>{ts.hematite}</span>
+                        <span style={{ color: 'var(--text-secondary)' }}>{hemAcum.toLocaleString(locale)} t</span>
                       </div>
-                      <div style={{ height: '7px', background: 'rgba(148,163,184,0.14)', borderRadius: '999px', overflow: 'hidden' }}>
+                      <div style={{ height: '6px', background: 'rgba(201,162,75,0.14)', borderRadius: '999px', overflow: 'hidden' }}>
                         <div
                           style={{
                             height: '100%',
                             width: `${Math.min(100, (hemAcum / (META * 0.65)) * 100)}%`,
-                            background: 'linear-gradient(90deg, var(--accent2), var(--accent-bright))',
-                            transition: 'width 0.7s ease',
+                            background: 'var(--accent-signal)',
+                            transition: 'width 0.5s ease',
                           }}
                         />
                       </div>
                     </div>
                     <div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px', fontFamily: 'var(--font-mono)', fontSize: '10.5px' }}>
-                        <span style={{ color: '#fbbf24' }}>GOETITA (GOE)</span>
-                        <span style={{ color: 'var(--text-secondary)' }}>{goeAcum.toLocaleString('pt-BR')} t</span>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px', fontFamily: 'var(--font-mono)', fontSize: '11.5px' }}>
+                        <span style={{ color: 'var(--accent)' }}>{ts.goethite}</span>
+                        <span style={{ color: 'var(--text-secondary)' }}>{goeAcum.toLocaleString(locale)} t</span>
                       </div>
-                      <div style={{ height: '7px', background: 'rgba(148,163,184,0.14)', borderRadius: '999px', overflow: 'hidden' }}>
+                      <div style={{ height: '6px', background: 'rgba(201,162,75,0.14)', borderRadius: '999px', overflow: 'hidden' }}>
                         <div
                           style={{
                             height: '100%',
                             width: `${Math.min(100, (goeAcum / (META * 0.45)) * 100)}%`,
-                            background: 'linear-gradient(90deg, #d97706, #fbbf24)',
-                            transition: 'width 0.7s ease',
+                            background: '#7d6940',
+                            transition: 'width 0.5s ease',
                           }}
                         />
                       </div>
@@ -505,8 +441,8 @@ export default function SicDemo({ activeTab, onTabChange }: SicDemoProps) {
                 </div>
 
                 <div>
-                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '2px', color: 'var(--accent-bright)', marginBottom: '12px' }}>
-                    STATUS DA FROTA (8 UNIDADES)
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--text-muted)', marginBottom: '12px', textTransform: 'uppercase' }}>
+                    {ts.fleetTitle}
                   </div>
                   <div className="equip-grid">
                     {EQUIPAMENTOS.map((eq) => (
@@ -518,14 +454,12 @@ export default function SicDemo({ activeTab, onTabChange }: SicDemoProps) {
                 </div>
 
                 <div>
-                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '2px', color: 'var(--accent-bright)', marginBottom: '10px' }}>
-                    LOG DE OCORRÊNCIAS DO CCO
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--text-muted)', marginBottom: '10px', textTransform: 'uppercase' }}>
+                    {ts.eventsTitle}
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', minHeight: '72px' }}>
                     {allEvents.length === 0 ? (
-                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--text-muted)' }}>
-                        Clique em &quot;Iniciar Turno&quot; ou &quot;+1 Janela&quot; para simular...
-                      </div>
+                      <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{ts.eventsEmpty}</div>
                     ) : (
                       allEvents.slice(0, 4).map((e, i) => (
                         <div key={`${e.ev}-${i}`} className={`alerta-${e.type}`}>
@@ -538,8 +472,7 @@ export default function SicDemo({ activeTab, onTabChange }: SicDemoProps) {
               </div>
             </div>
 
-            {/* FOOTER CONTROLS */}
-            <div className="sic-footer">
+            <div className="lab-footer">
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
                 <button
                   type="button"
@@ -547,23 +480,21 @@ export default function SicDemo({ activeTab, onTabChange }: SicDemoProps) {
                   disabled={horaAtual >= HORAS.length}
                   className="btn-primary"
                   style={{
-                    padding: '10px 18px',
-                    fontSize: '13px',
                     opacity: horaAtual >= HORAS.length ? 0.5 : 1,
                     cursor: horaAtual >= HORAS.length ? 'default' : 'pointer',
                   }}
                 >
                   {horaAtual >= HORAS.length ? (
                     <>
-                      <Square size={13} /> TURNO ENCERRADO
+                      <Square size={13} /> {ts.btnDone}
                     </>
                   ) : playing ? (
                     <>
-                      <Pause size={13} /> PAUSAR
+                      <Pause size={13} /> {ts.btnPause}
                     </>
                   ) : (
                     <>
-                      <Play size={13} /> {horaAtual === 0 ? 'INICIAR TURNO' : 'SIMULAR AUTO'}
+                      <Play size={13} /> {horaAtual === 0 ? ts.btnStart : ts.btnAuto}
                     </>
                   )}
                 </button>
@@ -574,34 +505,33 @@ export default function SicDemo({ activeTab, onTabChange }: SicDemoProps) {
                   disabled={horaAtual >= HORAS.length}
                   className="btn-secondary"
                   style={{
-                    padding: '10px 14px',
                     opacity: horaAtual >= HORAS.length ? 0.45 : 1,
                     cursor: horaAtual >= HORAS.length ? 'default' : 'pointer',
                   }}
                 >
-                  +1 JANELA
+                  {ts.btnStep}
                   <ChevronRight size={14} />
                 </button>
 
                 <button
                   type="button"
                   onClick={resetSim}
-                  className="btn-ghost"
-                  style={{ padding: '10px 12px' }}
-                  title="Reiniciar simulação"
-                  aria-label="Reiniciar simulação"
+                  className="btn-secondary"
+                  style={{ padding: '11px 12px' }}
+                  title={ts.resetTitle}
+                  aria-label={ts.resetTitle}
                 >
                   <RotateCcw size={14} />
                 </button>
 
                 {playing && (
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--accent-bright)' }}>
-                    PRÓXIMA EM {cdSec}s
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11.5px', color: 'var(--text-muted)' }}>
+                    {ts.nextWindowIn(cdSec)}
                   </span>
                 )}
               </div>
 
-              <div className="sic-footer-note">● SIC SIMULADO · DADOS FICTÍCIOS</div>
+              <div className="lab-footer-note">{ts.footerNote}</div>
             </div>
           </div>
         )}

@@ -1,9 +1,14 @@
 import { useState } from 'react';
-import { Check, Copy, Globe, Mail, MapPin, Phone } from 'lucide-react';
+import { Check, Copy, Globe, Mail, Phone } from 'lucide-react';
+import type { Translation } from '../i18n';
 
 const EMAIL = 'canazartleo@gmail.com';
 
-export function Contact() {
+interface ContactProps {
+  t: Translation;
+}
+
+export function Contact({ t }: ContactProps) {
   const [copied, setCopied] = useState(false);
 
   const copyEmail = async () => {
@@ -17,69 +22,64 @@ export function Contact() {
   };
 
   return (
-    <section className="contact-wrap" id="contact">
-      <div className="contact-sub reveal">ENGENHARIA DE MINAS · CCO · SISTEMAS OPERACIONAIS</div>
-      <h2 className="contact-title reveal">Vamos conversar?</h2>
-      <p className="contact-note reveal">
-        Aberto a conexões técnicas, projetos de transformação digital na mineração, sistemas de despacho e
-        desafios em inteligência operacional.
-      </p>
+    <section className="contact-section" id="contact">
+      <div className="contact-box reveal">
+        <div>
+          <h2 className="contact-title">{t.contact.title}</h2>
+          <p className="contact-note">{t.contact.note}</p>
+        </div>
 
-      <div className="contact-links reveal">
-        <a className="contact-link" href={`mailto:${EMAIL}`}>
-          <Mail size={14} strokeWidth={2} />
-          <span>{EMAIL.toUpperCase()}</span>
-        </a>
+        <div className="contact-actions">
+          <a className="contact-btn" href={`mailto:${EMAIL}`}>
+            <Mail size={14} />
+            <span>{EMAIL}</span>
+          </a>
 
-        <button
-          type="button"
-          className={`contact-link ${copied ? 'copied' : ''}`}
-          onClick={copyEmail}
-        >
-          {copied ? <Check size={14} strokeWidth={2.2} /> : <Copy size={14} strokeWidth={2} />}
-          <span>{copied ? 'E-MAIL COPIADO!' : 'COPIAR E-MAIL'}</span>
-        </button>
+          <button
+            type="button"
+            className={`contact-btn ${copied ? 'copied' : ''}`}
+            onClick={copyEmail}
+          >
+            {copied ? <Check size={14} /> : <Copy size={14} />}
+            <span>{copied ? t.contact.copied : t.contact.copyEmail}</span>
+          </button>
 
-        <a className="contact-link" href="tel:+5531996650183">
-          <Phone size={14} strokeWidth={2} />
-          <span>(31) 99665-0183</span>
-        </a>
+          <a className="contact-btn" href="tel:+5531996650183">
+            <Phone size={14} />
+            <span>(31) 99665-0183</span>
+          </a>
 
-        <a
-          className="contact-link"
-          href="https://www.linkedin.com/in/canazart"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <Globe size={14} strokeWidth={2} />
-          <span>LINKEDIN · /IN/CANAZART</span>
-        </a>
+          <a
+            className="contact-btn"
+            href="https://www.linkedin.com/in/canazart"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <Globe size={14} />
+            <span>LinkedIn</span>
+          </a>
 
-        <a
-          className="contact-link"
-          href="https://github.com/Canazart"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <Globe size={14} strokeWidth={2} />
-          <span>GITHUB · /CANAZART</span>
-        </a>
-
-        <span className="contact-link" style={{ cursor: 'default' }}>
-          <MapPin size={14} strokeWidth={2} />
-          <span>JOÃO MONLEVADE · MG</span>
-        </span>
+          <a
+            className="contact-btn"
+            href="https://github.com/Canazart"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <Globe size={14} />
+            <span>GitHub</span>
+          </a>
+        </div>
       </div>
     </section>
   );
 }
 
-export function Footer() {
+export function Footer({ t }: ContactProps) {
   return (
     <footer>
-      <div className="footer-name">LEONARDO P. P. CANAZART</div>
-      <div className="footer-copy">
-        © 2026 · ENGENHARIA DE MINAS (UEMG) · TÉCNICO DE SALA DE CONTROLE I · MINERAÇÃO 4.0
+      <div className="footer-inner">
+        <span>Leonardo P. P. Canazart</span>
+        <span>{t.contact.footerPlace}</span>
       </div>
     </footer>
   );

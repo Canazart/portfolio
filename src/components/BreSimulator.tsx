@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
-import { useState } from 'react';
-import { Code, Play, RotateCcw, ShieldCheck, Terminal } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { Code, Play, RotateCcw } from 'lucide-react';
+import type { Translation } from '../i18n';
 
 type AuditStatus = 'OK' | 'HERDADO' | 'SUPRIMIDO' | 'ALERTA' | 'ERRO' | 'DESCARTADO';
 type RegexClass = 'PROD' | 'JUST' | 'OCIO' | 'DESCONHECIDO' | 'VAZIO';
@@ -22,43 +23,34 @@ interface AuditRow {
   detalhe: string;
 }
 
-/* ── TAXONOMIA REGEX DO MOTOR ── */
+/* Multilingual regex supporting PT, EN, and ES operational log entries */
 const RX = {
-  JUST: /(manuten|abastec|refei|almo[cç]|troca de turno|chuva|detona|libera[cç]|pneu|borrach)/i,
-  OCIO: /(aguard|fila|sem (operador|escala|frente|caminh)|ocios|parad[oa])/i,
-  PROD: /(carreg|transp|basc|escav|viagem|desmonte)/i,
+  JUST: /(manuten|manten|mainten|abastec|fuel|refei|almo[cç]|almuer|lunch|meal|troca de turno|cambio de turno|shift|chuva|lluvia|rain|detona|blast|libera[cç]|pneu|neumat|tire|borrach)/i,
+  OCIO: /(aguard|esper|wait|fila|cola|queue|sem (operador|escala|frente|caminh)|sin (operador|escala|frente)|no (operator|schedule|face)|ocios|idle|standby|parad[oa])/i,
+  PROD: /(carreg|cargu|load|transp|acarr|haul|basc|dump|escav|excav|viagem|viaje|trip|desmonte)/i,
 };
 
-const CLS_LABEL: Record<RegexClass, string> = {
-  PROD: 'Produtivo',
-  JUST: 'Justificável',
-  OCIO: 'Ocioso',
-  DESCONHECIDO: 'Não reconhecido',
-  VAZIO: 'Vazio',
-};
-
-/* Janelas obrigatórias (minutos do dia): troca de turno (06:45-07:15, 18:45-19:15) e almoço (11:30-12:30) */
 const JANELAS: [number, number][] = [
   [405, 435],
   [690, 750],
   [1125, 1155],
 ];
 const TOLERANCIA_MIN = 15;
-const LIMITE_PROLONGADA_MIN = 720; // 12h
+const LIMITE_PROLONGADA_MIN = 720;
 
 const STATUS_COR: Record<AuditStatus, string> = {
-  OK: '#34d399',
-  HERDADO: '#38bdf8',
+  OK: '#3ea87d',
+  HERDADO: '#5c9ce6',
   SUPRIMIDO: '#a78bfa',
-  ALERTA: '#fb923c',
-  ERRO: '#fb7185',
-  DESCARTADO: '#94a3b8',
+  ALERTA: '#d9953b',
+  ERRO: '#d9606a',
+  DESCARTADO: '#8f8c83',
 };
 
 const STATUS_LIST: AuditStatus[] = ['OK', 'HERDADO', 'SUPRIMIDO', 'ALERTA', 'ERRO', 'DESCARTADO'];
 
 const PRESET_COMPLETO = `Equip;Data;Início;Fim;Estado;Motivo
-CB-02;09/11/2026;22:00;00:00;Ocioso;Manutenção corretiva - freio
+CB-02;09/11/2026;22:00;00:00;Ocioso;Manutenção corretiva, freio
 CB-02;10/11/2026;00:00;06:30;Ocioso;
 CB-01;10/11/2026;07:00;11:30;Produtivo;Transporte HEM
 CB-01;10/11/2026;11:30;12:30;Ocioso;Aguardando operador
@@ -71,10 +63,10 @@ CB-02;10/11/2026;14:00;14:00;Produtivo;Transporte HEM
 CB-03;10/11/2026;14:00;15:30;Ocioso;xyz
 CB-01;10/11/2026;15:00;15:40;Ocioso;Abastecimento
 CB-01;10/11/2026;16:00;17:00;Ocioso;
-CB-04;10/11/2026;00:00;20:00;Ocioso;Equipamento parado - sem escala`;
+CB-04;10/11/2026;00:00;20:00;Ocioso;Equipamento parado, sem escala`;
 
 const PRESET_D1_TURNO = `Equip;Data;Início;Fim;Estado;Motivo
-CB-02;09/11/2026;21:30;00:00;Ocioso;Manutenção corretiva - sistema hidráulico
+CB-02;09/11/2026;21:30;00:00;Ocioso;Manutenção corretiva, sistema hidráulico
 CB-02;10/11/2026;00:00;07:00;Ocioso;
 CB-05;10/11/2026;06:48;07:18;Ocioso;Aguardando operador
 CB-05;10/11/2026;11:30;12:30;Ocioso;Aguardando frente
@@ -86,7 +78,7 @@ ES-01;10/11/2026;10:00;11:30;Produtivo;Carregamento
 CB-07;10/11/2026;08:00;09:20;Ocioso;Fila na britagem
 CB-07;10/11/2026;13:00;14:15;Produtivo;Manutenção preventiva
 CB-07;10/11/2026;14:30;15:30;Ocioso;
-CB-08;10/11/2026;00:00;18:00;Ocioso;Sem escala - reserva de pátio`;
+CB-08;10/11/2026;00:00;18:00;Ocioso;Sem escala, reserva de pátio`;
 
 function parseTs(data: string, hora: string): number {
   const d = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(data);
@@ -108,7 +100,6 @@ function classify(motivo: string): RegexClass {
   return 'DESCONHECIDO';
 }
 
-/* Interseção temporal exata (em minutos) entre [t0, t1] e as janelas obrigatórias */
 function calcIntersecaoMin(t0: number, t1: number): number {
   let total = 0;
   for (let day = Math.floor(t0 / 86400); day <= Math.floor(t1 / 86400); day++) {
@@ -121,7 +112,7 @@ function calcIntersecaoMin(t0: number, t1: number): number {
   return total;
 }
 
-function runBreAudit(text: string) {
+function runBreAudit(text: string, tb: Translation['bre']) {
   const tStart = performance.now();
   const rows: AuditRow[] = [];
 
@@ -131,7 +122,7 @@ function runBreAudit(text: string) {
     .filter(Boolean)
     .forEach((line, idx) => {
       const cols = line.split(/\t|;/).map((x) => x.trim());
-      if (idx === 0 && /equip/i.test(cols[0])) return;
+      if (idx === 0 && /^(equip|unit|equipo)/i.test(cols[0])) return;
       const [equip = '', data = '', ini = '', fim = '', estado = '', motivo = ''] = cols;
       const t0 = parseTs(data, ini);
       let t1 = parseTs(data, fim);
@@ -155,15 +146,15 @@ function runBreAudit(text: string) {
       if (Number.isNaN(t0) || Number.isNaN(t1)) {
         r.valido = false;
         r.status = 'ERRO';
-        r.regra = 'R0 · Parsing';
-        r.detalhe = 'Data ou hora fora do formato DD/MM/AAAA e HH:MM.';
+        r.regra = tb.rules.r0Parse;
+        r.detalhe = tb.rules.r0ParseDet;
       } else if (t1 === t0) {
         r.valido = false;
         r.status = 'ERRO';
-        r.regra = 'R0 · Duração nula';
-        r.detalhe = 'Timestamp de início e fim idênticos (0 min).';
+        r.regra = tb.rules.r0Zero;
+        r.detalhe = tb.rules.r0ZeroDet;
       } else {
-        if (t1 < t0) t1 += 86400; // virada de meia-noite
+        if (t1 < t0) t1 += 86400;
         r.t1 = t1;
       }
 
@@ -187,66 +178,39 @@ function runBreAudit(text: string) {
     let motivoEfetivo = r.motivo;
 
     if (prev && r.t0 < prev.t1) {
-      apply(
-        'ERRO',
-        'R1 · Sobreposição',
-        `Inicia antes do término do registro anterior de ${r.equip} (${fmtTs(prev.t1)}).`
-      );
+      apply('ERRO', tb.rules.r1Overlap, tb.rules.r1OverlapDet(r.equip, fmtTs(prev.t1)));
     } else if (durMin > LIMITE_PROLONGADA_MIN) {
-      apply(
-        'DESCARTADO',
-        'R2 · Inatividade prolongada',
-        `${(durMin / 60).toFixed(1)} h contínuas (> 12 h): descartado para não poluir DF/UT.`
-      );
+      apply('DESCARTADO', tb.rules.r2Long, tb.rules.r2LongDet((durMin / 60).toFixed(1)));
     } else if (!r.motivo && prev && prev.t1 === r.t0 && prev.cls === 'JUST') {
       r.cls = 'JUST';
       motivoEfetivo = prev.motivo;
-      apply(
-        'HERDADO',
-        'R3 · Memória interdiária',
-        `Continuidade exata em Unix Timestamp: herdou "${prev.motivo}" do dia/turno anterior.`
-      );
+      apply('HERDADO', tb.rules.r3Inherit, tb.rules.r3InheritDet(prev.motivo));
     } else if (/^prod/i.test(r.estado)) {
       if (r.cls === 'PROD') {
-        apply('OK', 'R4 · Estado × motivo', 'Estado produtivo coerente com o apontamento.');
+        apply('OK', tb.rules.r4Match, tb.rules.r4MatchOk);
       } else {
-        apply(
-          'ERRO',
-          'R4 · Estado × motivo',
-          `Estado Produtivo incompatível com motivo ${r.motivo ? `"${r.motivo}" (${CLS_LABEL[r.cls]})` : 'vazio'}.`
-        );
+        const reasonPart = r.motivo ? `"${r.motivo}" (${tb.clsLabels[r.cls]})` : tb.emptyReason;
+        apply('ERRO', tb.rules.r4Match, tb.rules.r4ProdMismatch(reasonPart));
       }
     } else if (r.cls === 'PROD') {
-      apply('ERRO', 'R4 · Estado × motivo', `Estado Ocioso incompatível com motivo produtivo "${r.motivo}".`);
+      apply('ERRO', tb.rules.r4Match, tb.rules.r4IdleMismatch(r.motivo));
     } else if (r.cls === 'JUST') {
-      apply('OK', 'R5 · Justificável', `Motivo "${r.motivo}" validado pela taxonomia como parada justificável.`);
+      apply('OK', tb.rules.r5Just, tb.rules.r5JustDet(r.motivo));
     } else if (r.cls === 'DESCONHECIDO') {
-      apply('ERRO', 'R6 · Taxonomia Regex', `"${r.motivo}" não corresponde a nenhuma categoria operacional.`);
+      apply('ERRO', tb.rules.r6Tax, tb.rules.r6TaxDet(r.motivo));
     } else {
       const inter = calcIntersecaoMin(r.t0, r.t1);
       const liq = durMin - inter;
       if (liq <= TOLERANCIA_MIN) {
         if (inter > 0) {
-          apply(
-            'SUPRIMIDO',
-            'R7 · Janela obrigatória',
-            `${inter} min em troca de turno/almoço (líquido ${liq} min ≤ ${TOLERANCIA_MIN} min): falso positivo suprimido.`
-          );
+          apply('SUPRIMIDO', tb.rules.r7Win, tb.rules.r7WinDet(inter, liq, TOLERANCIA_MIN));
         } else {
-          apply('OK', 'R7 · Tolerância', `${durMin} min dentro da tolerância operacional (${TOLERANCIA_MIN} min).`);
+          apply('OK', tb.rules.r7Tol, tb.rules.r7TolDet(durMin, TOLERANCIA_MIN));
         }
       } else if (r.cls === 'VAZIO') {
-        apply(
-          'ERRO',
-          'R3 · Sem justificativa',
-          `${liq} min ociosos sem motivo e sem registro anterior contínuo para herdar.`
-        );
+        apply('ERRO', tb.rules.r3NoReason, tb.rules.r3NoReasonDet(liq));
       } else {
-        apply(
-          'ALERTA',
-          'R7 · Ociosidade real',
-          `${liq} min líquidos de ociosidade ("${r.motivo}")${inter ? `, já descontados ${inter} min de janela obrigatória` : ''}.`
-        );
+        apply('ALERTA', tb.rules.r7Idle, tb.rules.r7IdleDet(liq, r.motivo, inter));
       }
     }
 
@@ -277,29 +241,41 @@ function runBreAudit(text: string) {
     ociH: sumHours((r) => r.status === 'ALERTA'),
     naoValH: sumHours((r) => r.status === 'ERRO' || r.status === 'DESCARTADO'),
     log: [
-      `Parsing tabular: ${rows.length} apontamentos lidos (${rows.filter((r) => r.valido).length} intervalos Unix válidos)`,
-      `Taxonomia Regex: ${countCls('PROD')} produtivos · ${countCls('JUST')} justificáveis · ${countCls('OCIO')} ociosos · ${countCls('VAZIO')} vazios · ${countCls('DESCONHECIDO')} inválidos`,
-      `Motor Heurístico R0–R7: ${falsosEvitados} falsos positivos/ruídos filtrados (D-1 + janelas + inatividade >12h)`,
-      `Auditoria concluída client-side em ${ms.toFixed(2)} ms`,
+      tb.logParse(rows.length, rows.filter((r) => r.valido).length),
+      tb.logTax(countCls('PROD'), countCls('JUST'), countCls('OCIO'), countCls('VAZIO'), countCls('DESCONHECIDO')),
+      tb.logDone(falsosEvitados, ms.toFixed(2)),
     ],
   };
 }
 
-export default function BreSimulator() {
+interface BreSimulatorProps {
+  t: Translation;
+}
+
+export default function BreSimulator({ t }: BreSimulatorProps) {
+  const tb = t.bre;
   const [text, setText] = useState(PRESET_COMPLETO);
+  const [auditedText, setAuditedText] = useState(PRESET_COMPLETO);
+  const [runCounter, setRunCounter] = useState(0);
   const [activePreset, setActivePreset] = useState<'completo' | 'd1' | 'garantia'>('completo');
-  const [res, setRes] = useState(() => runBreAudit(PRESET_COMPLETO));
   const [filtro, setFiltro] = useState<AuditStatus | 'TODOS'>('TODOS');
 
+  const res = useMemo(() => {
+    void runCounter;
+    return runBreAudit(auditedText, tb);
+  }, [auditedText, tb, runCounter]);
+
   const handleRun = () => {
-    setRes(runBreAudit(text));
+    setAuditedText(text);
+    setRunCounter((c) => c + 1);
     setFiltro('TODOS');
   };
 
   const loadPreset = (key: 'completo' | 'd1' | 'garantia', content: string) => {
     setActivePreset(key);
     setText(content);
-    setRes(runBreAudit(content));
+    setAuditedText(content);
+    setRunCounter((c) => c + 1);
     setFiltro('TODOS');
   };
 
@@ -308,57 +284,24 @@ export default function BreSimulator() {
 
   return (
     <div className="lab-shell">
-      <div className="ca ca-tl" />
-      <div className="ca ca-tr" />
-      <div className="ca ca-bl" />
-      <div className="ca ca-br" />
-
-      {/* HEADER */}
-      <div className="sic-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <ShieldCheck size={22} color="var(--accent-bright)" />
-          <div>
-            <div
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: '16px',
-                fontWeight: 700,
-                letterSpacing: '2px',
-                color: 'var(--accent-bright)',
-              }}
-            >
-              CUSTOM BRE — AUDITORIA HEURÍSTICA DE FROTA (R0–R7)
-            </div>
-            <div
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: '9.5px',
-                letterSpacing: '1.5px',
-                color: 'var(--text-muted)',
-              }}
-            >
-              PLANILHA EDITÁVEL · UNIX TIMESTAMPS · REGEX TAXONOMY · MEMÓRIA INTERDIÁRIA D-1
-            </div>
-          </div>
+      <div className="lab-bar">
+        <div>
+          <div className="lab-bar-title">{tb.title}</div>
+          <div className="lab-bar-sub">{tb.subtitle}</div>
         </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-          <span className="exp-badge active" style={{ fontSize: '10px' }}>
-            ⚡ {res.ms.toFixed(2)} ms
-          </span>
-          <span className="exp-badge promo" style={{ fontSize: '10px' }}>
-            {res.falsosEvitados} FALSOS POSITIVOS EVITADOS
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <span className="case-badge prod">{res.ms.toFixed(2)} ms</span>
+          <span className="case-badge">
+            {res.falsosEvitados} {tb.falsePositivesFiltered}
           </span>
         </div>
       </div>
 
-      {/* BODY */}
       <div className="bre-body">
         <div className="bre-intro-bar">
           <p style={{ fontSize: '13.5px', color: 'var(--text-secondary)', lineHeight: 1.65 }}>
-            Edite ou cole apontamentos abaixo (separador <code>;</code> ou tabulação:{' '}
-            <code>Equip;Data;Início;Fim;Estado;Motivo</code>) e execute o motor em tempo real — ou teste um cenário
-            pronto:
+            {tb.introPrefix} <code>;</code> {tb.introMiddle}{' '}
+            <code>Equip;Data;Início;Fim;Estado;Motivo</code> {tb.introSuffix}
           </p>
           <div className="bre-presets">
             <button
@@ -366,21 +309,21 @@ export default function BreSimulator() {
               className={`bre-preset-btn ${activePreset === 'completo' ? 'active' : ''}`}
               onClick={() => loadPreset('completo', PRESET_COMPLETO)}
             >
-              Cenário Completo (14 linhas)
+              {tb.presets.completo}
             </button>
             <button
               type="button"
               className={`bre-preset-btn ${activePreset === 'd1' ? 'active' : ''}`}
               onClick={() => loadPreset('d1', PRESET_D1_TURNO)}
             >
-              Memória D-1 &amp; Turno
+              {tb.presets.d1}
             </button>
             <button
               type="button"
               className={`bre-preset-btn ${activePreset === 'garantia' ? 'active' : ''}`}
               onClick={() => loadPreset('garantia', PRESET_GARANTIA)}
             >
-              Garantia Técnica &amp; Conflitos
+              {tb.presets.garantia}
             </button>
           </div>
         </div>
@@ -390,74 +333,67 @@ export default function BreSimulator() {
           value={text}
           onChange={(e) => setText(e.target.value)}
           spellCheck={false}
-          aria-label="Planilha de apontamentos do FMS"
+          aria-label={tb.textareaAria}
         />
 
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
-          <button type="button" className="btn-primary" style={{ padding: '11px 20px', fontSize: '13px' }} onClick={handleRun}>
-            <Play size={13} strokeWidth={2.5} />
-            EXECUTAR AUDITORIA R0–R7
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <button type="button" className="btn-primary" onClick={handleRun}>
+            <Play size={13} strokeWidth={2.4} />
+            {tb.runBtn}
           </button>
           <button
             type="button"
-            className="btn-ghost"
-            style={{ padding: '11px 16px' }}
+            className="btn-secondary"
             onClick={() => loadPreset('completo', PRESET_COMPLETO)}
           >
             <RotateCcw size={13} />
-            RESTAURAR EXEMPLO
+            {tb.resetBtn}
           </button>
         </div>
 
-        {/* TERMINAL EXECUTION LOG */}
         <div className="bre-log-box">
-          <div className="bre-log-title">
-            <Terminal size={12} />
-            LOG DO PIPELINE HEURÍSTICO
-          </div>
           {res.log.map((line, i) => (
-            <div key={i} className="bre-log-line">
+            <div key={i}>
               <span style={{ color: 'var(--accent)' }}>&gt;</span> {line}
             </div>
           ))}
         </div>
 
-        {/* KPI STRIP */}
         <div className="bre-kpis-grid">
           <div className="bre-stat">
-            <div className="bre-stat-lbl">REGISTROS</div>
+            <div className="bre-stat-lbl">{tb.kpiRecords}</div>
             <div className="bre-stat-val">{res.rows.length}</div>
           </div>
           <div className="bre-stat">
-            <div className="bre-stat-lbl">PRODUTIVO</div>
+            <div className="bre-stat-lbl">{tb.kpiProductive}</div>
             <div className="bre-stat-val" style={{ color: STATUS_COR.OK }}>
               {fmtH(res.prodH)}
             </div>
           </div>
           <div className="bre-stat">
-            <div className="bre-stat-lbl">JUSTIFICADO / D-1</div>
+            <div className="bre-stat-lbl">{tb.kpiJustified}</div>
             <div className="bre-stat-val" style={{ color: STATUS_COR.SUPRIMIDO }}>
               {fmtH(res.justH)}
             </div>
           </div>
           <div className="bre-stat">
-            <div className="bre-stat-lbl">OCIOSO REAL</div>
+            <div className="bre-stat-lbl">{tb.kpiRealIdle}</div>
             <div className="bre-stat-val" style={{ color: STATUS_COR.ALERTA }}>
               {fmtH(res.ociH)}
             </div>
           </div>
           <div className="bre-stat">
-            <div className="bre-stat-lbl">NÃO VALIDADO</div>
+            <div className="bre-stat-lbl">{tb.kpiUnvalidated}</div>
             <div className="bre-stat-val" style={{ color: STATUS_COR.ERRO }}>
               {fmtH(res.naoValH)}
             </div>
           </div>
         </div>
 
-        {/* STATUS FILTER CHIPS */}
         <div className="bre-chips">
           {(['TODOS', ...STATUS_LIST] as const).map((status) => {
             const count = status === 'TODOS' ? res.rows.length : res.countStatus(status);
+            const label = status === 'TODOS' ? tb.filterAll : tb.statusLabels[status];
             return (
               <button
                 key={status}
@@ -470,52 +406,51 @@ export default function BreSimulator() {
                 }
                 onClick={() => setFiltro(status)}
               >
-                {status} · {count}
+                {label}: {count}
               </button>
             );
           })}
         </div>
 
-        {/* FULL AUDIT TABLE */}
         <div className="bre-tbl-wrap">
           <table className="bre-tbl">
             <thead>
               <tr>
-                <th>#</th>
-                <th>Equip.</th>
-                <th>Intervalo</th>
-                <th>Unix (t0)</th>
-                <th>Estado</th>
-                <th>Motivo</th>
-                <th>Classe</th>
-                <th>Veredito</th>
-                <th>Regra &amp; Diagnóstico</th>
+                <th>{tb.cols.num}</th>
+                <th>{tb.cols.equip}</th>
+                <th>{tb.cols.interval}</th>
+                <th>{tb.cols.unix}</th>
+                <th>{tb.cols.state}</th>
+                <th>{tb.cols.reason}</th>
+                <th>{tb.cols.cls}</th>
+                <th>{tb.cols.verdict}</th>
+                <th>{tb.cols.ruleDetail}</th>
               </tr>
             </thead>
             <tbody>
               {visibleRows.map((r) => (
                 <tr key={r.id}>
                   <td className="mono" style={{ color: 'var(--text-dim)' }}>{r.id}</td>
-                  <td className="mono" style={{ color: 'var(--accent-bright)', fontWeight: 600 }}>{r.equip}</td>
+                  <td className="mono" style={{ color: 'var(--text)', fontWeight: 500 }}>{r.equip}</td>
                   <td className="mono" style={{ whiteSpace: 'nowrap' }}>
-                    {r.data.slice(0, 5)} {r.ini}–{r.fim}
+                    {r.data.slice(0, 5)} {r.ini} {tb.timeSep} {r.fim}
                   </td>
                   <td className="mono" style={{ color: 'var(--text-dim)' }}>
-                    {r.valido ? r.t0 : '—'}
+                    {r.valido ? r.t0 : 'n/a'}
                   </td>
                   <td>{r.estado}</td>
-                  <td>{r.motivo || <em style={{ color: 'var(--text-dim)' }}>vazio</em>}</td>
-                  <td style={{ whiteSpace: 'nowrap' }}>{CLS_LABEL[r.cls]}</td>
+                  <td>{r.motivo || <em style={{ color: 'var(--text-dim)' }}>{tb.emptyReason}</em>}</td>
+                  <td style={{ whiteSpace: 'nowrap' }}>{tb.clsLabels[r.cls]}</td>
                   <td>
                     <span
                       className="bre-tag"
                       style={{ '--c': STATUS_COR[r.status] } as CSSProperties}
                     >
-                      {r.status}
+                      {tb.statusLabels[r.status]}
                     </span>
                   </td>
                   <td>
-                    <strong style={{ color: 'var(--text-main)', fontSize: '12px' }}>{r.regra}</strong>
+                    <strong style={{ color: 'var(--text)', fontSize: '12.5px' }}>{r.regra}</strong>
                     <div className="bre-det">{r.detalhe}</div>
                   </td>
                 </tr>
@@ -524,39 +459,32 @@ export default function BreSimulator() {
           </table>
         </div>
 
-        {/* REGEX & RULES INSPECTOR */}
         <details className="bre-rules">
           <summary>
             <Code size={13} />
-            INSPECIONAR EXPRESSÕES REGEX &amp; REGRAS DO MOTOR (R0–R7)
+            {tb.rulesSummary}
           </summary>
           <div className="bre-rules-content">
             <div>
-              <strong>RX.JUST:</strong> {String(RX.JUST)}
+              <strong>{tb.rulesJust}</strong> {String(RX.JUST)}
             </div>
             <div>
-              <strong>RX.OCIO:</strong> {String(RX.OCIO)}
+              <strong>{tb.rulesIdle}</strong> {String(RX.OCIO)}
             </div>
             <div>
-              <strong>RX.PROD:</strong> {String(RX.PROD)}
+              <strong>{tb.rulesProd}</strong> {String(RX.PROD)}
             </div>
             <div style={{ marginTop: '8px', color: 'var(--text-secondary)' }}>
-              <strong>Janelas obrigatórias:</strong> 06:45–07:15 · 11:30–12:30 · 18:45–19:15 &nbsp;|&nbsp;{' '}
-              <strong>Tolerância líquida:</strong> {TOLERANCIA_MIN} min &nbsp;|&nbsp;{' '}
-              <strong>Descarte de inatividade:</strong> &gt; {LIMITE_PROLONGADA_MIN / 60} h
+              <strong>{tb.rulesWindowsLabel}</strong> {tb.rulesWindowsVal};{' '}
+              <strong>{tb.rulesTolLabel}</strong> {TOLERANCIA_MIN} min;{' '}
+              <strong>{tb.rulesLongIdleLabel}</strong> &gt; {LIMITE_PROLONGADA_MIN / 60} h.
             </div>
           </div>
         </details>
       </div>
 
-      {/* FOOTER */}
-      <div className="sic-footer">
-        <div className="sic-footer-note">
-          ● MOTOR EXECUTADO REALMENTE NO NAVEGADOR EM JAVASCRIPT ES6+ · DADOS ILUSTRATIVOS
-        </div>
-        <div className="sic-footer-note" style={{ color: 'var(--accent-bright)' }}>
-          AUDITORIA ALGORÍTMICA · PROTEÇÃO DE GARANTIA TÉCNICA
-        </div>
+      <div className="lab-footer">
+        <div className="lab-footer-note">{tb.footerNote}</div>
       </div>
     </div>
   );
