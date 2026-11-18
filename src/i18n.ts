@@ -119,6 +119,8 @@ export interface Translation {
     rulesWindowsVal: string;
     rulesTolLabel: string;
     rulesLongIdleLabel: string;
+    showMore: (remaining: number) => string;
+    showLess: string;
     footerNote: string;
     clsLabels: { PROD: string; JUST: string; OCIO: string; DESCONHECIDO: string; VAZIO: string };
     statusLabels: {
@@ -360,7 +362,7 @@ export const TRANSLATIONS: Record<Lang, Translation> = {
         {
           meta: 'ago 2026 a atual; associado à Bemisa',
           title: 'Algoritmo de Validação Heurística e Auditoria de Frota (Custom BRE)',
-          badge: 'Em produção',
+          badge: 'Projeto aplicado',
           badgeType: 'prod',
           problemLabel: 'Problema',
           problem:
@@ -378,7 +380,7 @@ export const TRANSLATIONS: Record<Lang, Translation> = {
         {
           meta: 'jan 2026 a atual; associado à Bemisa',
           title: 'Short Interval Control (SIC): Sistema de Controle Operacional',
-          badge: 'Em produção',
+          badge: 'Projeto aplicado',
           badgeType: 'prod',
           problemLabel: 'Problema',
           problem:
@@ -461,6 +463,8 @@ export const TRANSLATIONS: Record<Lang, Translation> = {
       rulesWindowsVal: '06:45 a 07:15, 11:30 a 12:30 e 18:45 a 19:15',
       rulesTolLabel: 'Tolerância líquida:',
       rulesLongIdleLabel: 'Inatividade prolongada:',
+      showMore: (remaining) => `Exibir mais (+${remaining} registros)`,
+      showLess: 'Mostrar menos',
       footerNote: 'Execução client side em JavaScript (ES6+); dados fictícios para demonstração.',
       clsLabels: {
         PROD: 'Produtivo',
@@ -765,7 +769,7 @@ export const TRANSLATIONS: Record<Lang, Translation> = {
         {
           meta: 'Aug 2026 to present; associated with Bemisa',
           title: 'Heuristic Validation and Fleet Audit Algorithm (Custom BRE)',
-          badge: 'In production',
+          badge: 'Applied project',
           badgeType: 'prod',
           problemLabel: 'Problem',
           problem:
@@ -783,7 +787,7 @@ export const TRANSLATIONS: Record<Lang, Translation> = {
         {
           meta: 'Jan 2026 to present; associated with Bemisa',
           title: 'Short Interval Control (SIC): Operational Control System',
-          badge: 'In production',
+          badge: 'Applied project',
           badgeType: 'prod',
           problemLabel: 'Problem',
           problem:
@@ -866,6 +870,8 @@ export const TRANSLATIONS: Record<Lang, Translation> = {
       rulesWindowsVal: '06:45 to 07:15, 11:30 to 12:30, and 18:45 to 19:15',
       rulesTolLabel: 'Net tolerance:',
       rulesLongIdleLabel: 'Prolonged inactivity:',
+      showMore: (remaining) => `Show more (+${remaining} records)`,
+      showLess: 'Show less',
       footerNote: 'Executed client-side in JavaScript (ES6+); sample data for demonstration.',
       clsLabels: {
         PROD: 'Productive',
@@ -1170,7 +1176,7 @@ export const TRANSLATIONS: Record<Lang, Translation> = {
         {
           meta: 'ago 2026 a actual; asociado a Bemisa',
           title: 'Algoritmo de Validación Heurística y Auditoría de Flota (Custom BRE)',
-          badge: 'En producción',
+          badge: 'Proyecto aplicado',
           badgeType: 'prod',
           problemLabel: 'Problema',
           problem:
@@ -1188,7 +1194,7 @@ export const TRANSLATIONS: Record<Lang, Translation> = {
         {
           meta: 'ene 2026 a actual; asociado a Bemisa',
           title: 'Short Interval Control (SIC): Sistema de Control Operacional',
-          badge: 'En producción',
+          badge: 'Proyecto aplicado',
           badgeType: 'prod',
           problemLabel: 'Problema',
           problem:
@@ -1271,6 +1277,8 @@ export const TRANSLATIONS: Record<Lang, Translation> = {
       rulesWindowsVal: '06:45 a 07:15, 11:30 a 12:30 y 18:45 a 19:15',
       rulesTolLabel: 'Tolerancia neta:',
       rulesLongIdleLabel: 'Inactividad prolongada:',
+      showMore: (remaining) => `Mostrar más (+${remaining} registros)`,
+      showLess: 'Mostrar menos',
       footerNote: 'Ejecución client side en JavaScript (ES6+); datos ficticios de demostración.',
       clsLabels: {
         PROD: 'Productivo',
@@ -1575,7 +1583,7 @@ export const TRANSLATIONS: Record<Lang, Translation> = {
         {
           meta: '2026年8月 至今；关联 Bemisa',
           title: '启发式验证与车队审计引擎 (Custom BRE)',
-          badge: '生产运行中',
+          badge: '已落地应用',
           badgeType: 'prod',
           problemLabel: '业务痛点',
           problem:
@@ -1593,7 +1601,7 @@ export const TRANSLATIONS: Record<Lang, Translation> = {
         {
           meta: '2026年1月 至今；关联 Bemisa',
           title: '短周期控制 (SIC)：矿山运营控制系统',
-          badge: '生产运行中',
+          badge: '已落地应用',
           badgeType: 'prod',
           problemLabel: '业务痛点',
           problem:
@@ -1676,6 +1684,8 @@ export const TRANSLATIONS: Record<Lang, Translation> = {
       rulesWindowsVal: '06:45 至 07:15、11:30 至 12:30、18:45 至 19:15',
       rulesTolLabel: '净容差：',
       rulesLongIdleLabel: '长期闲置阈值：',
+      showMore: (remaining) => `展开更多（+${remaining} 条记录）`,
+      showLess: '收起表格',
       footerNote: '基于 JavaScript (ES6+) 在浏览器端实时运行；演示使用虚构数据。',
       clsLabels: {
         PROD: '生产',

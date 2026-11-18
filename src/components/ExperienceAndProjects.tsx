@@ -1,4 +1,4 @@
-import { ArrowDownRight } from 'lucide-react';
+import { ArrowDownRight, Check } from 'lucide-react';
 import type { LabTab } from './SicDemo';
 import type { Translation } from '../i18n';
 
@@ -98,7 +98,11 @@ export function Projects({ onOpenLabTab, t }: ProjectsProps) {
                 <h3 className="case-title">{item.title}</h3>
               </div>
               <span className={`case-badge ${item.badgeType}`}>
-                <span className="badge-dot" aria-hidden="true" />
+                {item.badgeType === 'prod' ? (
+                  <Check size={12} strokeWidth={2.6} aria-hidden="true" />
+                ) : (
+                  <span className="badge-dot" aria-hidden="true" />
+                )}
                 {item.badge}
               </span>
             </div>

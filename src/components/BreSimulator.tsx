@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 import { useMemo, useState } from 'react';
-import { Code, Play, RotateCcw } from 'lucide-react';
+import { ChevronDown, ChevronUp, Code, Play, RotateCcw } from 'lucide-react';
 import type { Translation } from '../i18n';
 
 type AuditStatus = 'OK' | 'HERDADO' | 'SUPRIMIDO' | 'ALERTA' | 'ERRO' | 'DESCARTADO';
@@ -253,6 +253,8 @@ interface BreSimulatorProps {
   t: Translation;
 }
 
+const INITIAL_VISIBLE_ROWS = 5;
+
 export default function BreSimulator({ t }: BreSimulatorProps) {
   const tb = t.bre;
   const [text, setText] = useState(PRESET_COMPLETO);
@@ -260,6 +262,7 @@ export default function BreSimulator({ t }: BreSimulatorProps) {
   const [runCounter, setRunCounter] = useState(0);
   const [activePreset, setActivePreset] = useState<'completo' | 'd1' | 'garantia'>('completo');
   const [filtro, setFiltro] = useState<AuditStatus | 'TODOS'>('TODOS');
+  const [showAllRows, setShowAllRows] = useState(false);
 
   const res = useMemo(() => {
     void runCounter;
@@ -270,6 +273,7 @@ export default function BreSimulator({ t }: BreSimulatorProps) {
     setAuditedText(text);
     setRunCounter((c) => c + 1);
     setFiltro('TODOS');
+    setShowAllRows(false);
   };
 
   const loadPreset = (key: 'completo' | 'd1' | 'garantia', content: string) => {
@@ -278,9 +282,13 @@ export default function BreSimulator({ t }: BreSimulatorProps) {
     setAuditedText(content);
     setRunCounter((c) => c + 1);
     setFiltro('TODOS');
+    setShowAllRows(false);
   };
 
   const visibleRows = res.rows.filter((r) => filtro === 'TODOS' || r.status === filtro);
+  const hasMoreRows = visibleRows.length > INITIAL_VISIBLE_ROWS;
+  const displayedRows = showAllRows ? visibleRows : visibleRows.slice(0, INITIAL_VISIBLE_ROWS);
+  const hiddenCount = visibleRows.length - displayedRows.length;
   const fmtH = (n: number) => `${n.toFixed(1)} h`;
 
   return (
@@ -411,7 +419,10 @@ export default function BreSimulator({ t }: BreSimulatorProps) {
                     ? ({ '--c': STATUS_COR[status] } as CSSProperties)
                     : undefined
                 }
-                onClick={() => setFiltro(status)}
+                onClick={() => {
+                  setFiltro(status);
+                  setShowAllRows(false);
+                }}
               >
                 {status !== 'TODOS' && <span className="status-dot" aria-hidden="true" />}
                 <span>{label}</span>
@@ -421,52 +432,77 @@ export default function BreSimulator({ t }: BreSimulatorProps) {
           })}
         </div>
 
-        <div className="bre-tbl-wrap">
-          <table className="bre-tbl">
-            <thead>
-              <tr>
-                <th>{tb.cols.num}</th>
-                <th>{tb.cols.equip}</th>
-                <th>{tb.cols.interval}</th>
-                <th>{tb.cols.unix}</th>
-                <th>{tb.cols.state}</th>
-                <th>{tb.cols.reason}</th>
-                <th>{tb.cols.cls}</th>
-                <th>{tb.cols.verdict}</th>
-                <th>{tb.cols.ruleDetail}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {visibleRows.map((r) => (
-                <tr key={r.id}>
-                  <td className="mono" style={{ color: 'var(--text-dim)' }}>{r.id}</td>
-                  <td className="mono" style={{ color: 'var(--text)', fontWeight: 500 }}>{r.equip}</td>
-                  <td className="mono" style={{ whiteSpace: 'nowrap' }}>
-                    {r.data.slice(0, 5)} {r.ini} {tb.timeSep} {r.fim}
-                  </td>
-                  <td className="mono" style={{ color: 'var(--text-dim)' }}>
-                    {r.valido ? r.t0 : 'n/a'}
-                  </td>
-                  <td>{r.estado}</td>
-                  <td>{r.motivo || <em style={{ color: 'var(--text-dim)' }}>{tb.emptyReason}</em>}</td>
-                  <td style={{ whiteSpace: 'nowrap' }}>{tb.clsLabels[r.cls]}</td>
-                  <td>
-                    <span
-                      className="bre-tag"
-                      style={{ '--c': STATUS_COR[r.status] } as CSSProperties}
-                    >
-                      <span className="status-dot" aria-hidden="true" />
-                      {tb.statusLabels[r.status]}
-                    </span>
-                  </td>
-                  <td>
-                    <strong style={{ color: 'var(--text)', fontSize: '12.5px' }}>{r.regra}</strong>
-                    <div className="bre-det">{r.detalhe}</div>
-                  </td>
+        <div className={`bre-tbl-card ${hasMoreRows && !showAllRows ? 'is-collapsed' : ''}`}>
+          <div className="bre-tbl-wrap">
+            <table className="bre-tbl">
+              <thead>
+                <tr>
+                  <th>{tb.cols.num}</th>
+                  <th>{tb.cols.equip}</th>
+                  <th>{tb.cols.interval}</th>
+                  <th>{tb.cols.unix}</th>
+                  <th>{tb.cols.state}</th>
+                  <th>{tb.cols.reason}</th>
+                  <th>{tb.cols.cls}</th>
+                  <th>{tb.cols.verdict}</th>
+                  <th>{tb.cols.ruleDetail}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {displayedRows.map((r) => (
+                  <tr key={r.id}>
+                    <td className="mono" style={{ color: 'var(--text-dim)' }}>{r.id}</td>
+                    <td className="mono" style={{ color: 'var(--text)', fontWeight: 500 }}>{r.equip}</td>
+                    <td className="mono" style={{ whiteSpace: 'nowrap' }}>
+                      {r.data.slice(0, 5)} {r.ini} {tb.timeSep} {r.fim}
+                    </td>
+                    <td className="mono" style={{ color: 'var(--text-dim)' }}>
+                      {r.valido ? r.t0 : 'n/a'}
+                    </td>
+                    <td>{r.estado}</td>
+                    <td>{r.motivo || <em style={{ color: 'var(--text-dim)' }}>{tb.emptyReason}</em>}</td>
+                    <td style={{ whiteSpace: 'nowrap' }}>{tb.clsLabels[r.cls]}</td>
+                    <td>
+                      <span
+                        className="bre-tag"
+                        style={{ '--c': STATUS_COR[r.status] } as CSSProperties}
+                      >
+                        <span className="status-dot" aria-hidden="true" />
+                        {tb.statusLabels[r.status]}
+                      </span>
+                    </td>
+                    <td>
+                      <strong style={{ color: 'var(--text)', fontSize: '12.5px' }}>{r.regra}</strong>
+                      <div className="bre-det">{r.detalhe}</div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {hasMoreRows && (
+            <div className="bre-tbl-more-bar">
+              <button
+                type="button"
+                className="bre-more-btn"
+                onClick={() => setShowAllRows((prev) => !prev)}
+                aria-expanded={showAllRows}
+              >
+                {showAllRows ? (
+                  <>
+                    <ChevronUp size={14} />
+                    <span>{tb.showLess}</span>
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown size={14} />
+                    <span>{tb.showMore(hiddenCount)}</span>
+                  </>
+                )}
+              </button>
+            </div>
+          )}
         </div>
 
         <details className="bre-rules">
