@@ -219,12 +219,15 @@ export default function SicDemo({ activeTab, onTabChange, lang, t }: SicDemoProp
         ) : (
           <div className="lab-shell">
             <div className="lab-bar">
-              <div>
-                <div className="lab-bar-title">{ts.title}</div>
-                <div className="lab-bar-sub">{ts.subtitle}</div>
+              <div className="lab-bar-lead">
+                <span className={`beacon-dot ${playing ? 'live' : ''}`} aria-hidden="true" />
+                <div>
+                  <div className="lab-bar-title">{ts.title}</div>
+                  <div className="lab-bar-sub">{ts.subtitle}</div>
+                </div>
               </div>
               <div style={{ textAlign: 'right' }}>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '18px', fontWeight: 600, color: 'var(--text)' }}>
+                <div className="sic-clock">
                   {horaAtual >= HORAS.length ? '15:00' : nextH.start}
                 </div>
                 <div className="lab-bar-sub">{ts.shiftWindow(horaAtual, HORAS.length)}</div>
@@ -298,13 +301,11 @@ export default function SicDemo({ activeTab, onTabChange, lang, t }: SicDemoProp
                   {pctMeta}% {ts.completed}
                 </div>
               </div>
-              <div style={{ height: '6px', background: 'rgba(201,162,75,0.14)', borderRadius: '999px', overflow: 'hidden' }}>
+              <div className="sic-progress-track">
                 <div
+                  className="sic-progress-fill"
                   style={{
-                    height: '100%',
                     width: `${pctMeta}%`,
-                    background: pctMeta >= 85 ? 'var(--ok)' : 'var(--accent-signal)',
-                    transition: 'width 0.5s ease',
                   }}
                 />
               </div>
@@ -332,7 +333,7 @@ export default function SicDemo({ activeTab, onTabChange, lang, t }: SicDemoProp
                         />
                         <Legend wrapperStyle={{ fontSize: '11px', fontFamily: 'JetBrains Mono, monospace' }} />
                         <Bar dataKey="HEM" stackId="a" fill="#d6b15c" />
-                        <Bar dataKey="GOE" stackId="a" fill="#7d6940" radius={[2, 2, 0, 0]} />
+                        <Bar dataKey="GOE" stackId="a" fill="#8b7040" radius={[3, 3, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
@@ -445,11 +446,15 @@ export default function SicDemo({ activeTab, onTabChange, lang, t }: SicDemoProp
                     {ts.fleetTitle}
                   </div>
                   <div className="equip-grid">
-                    {EQUIPAMENTOS.map((eq) => (
-                      <div key={eq} className={`equip ${downs.includes(eq) ? 'equip-down' : 'equip-ok'}`}>
-                        {eq}
-                      </div>
-                    ))}
+                    {EQUIPAMENTOS.map((eq) => {
+                      const isDown = downs.includes(eq);
+                      return (
+                        <div key={eq} className={`equip ${isDown ? 'equip-down' : 'equip-ok'}`}>
+                          <span className="equip-pip" aria-hidden="true" />
+                          <span>{eq}</span>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
 

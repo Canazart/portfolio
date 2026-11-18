@@ -32,9 +32,13 @@ export default function Nav({ activeSection, lang, onLangChange, t }: NavProps) 
 
   return (
     <nav className={scrolled ? 'scrolled' : ''}>
+      <div className="scroll-progress" aria-hidden="true" />
       <div className="nav-inner">
         <a className="nav-brand" href="#">
-          Leonardo Canazart<span>.</span>
+          <span className="nav-brand-mark" aria-hidden="true" />
+          <span className="nav-brand-text">
+            Leonardo Canazart<span className="nav-brand-dot">.</span>
+          </span>
         </a>
 
         <div className={`nav-links ${isOpen ? 'mobile-open' : ''}`}>

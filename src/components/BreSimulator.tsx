@@ -38,13 +38,14 @@ const JANELAS: [number, number][] = [
 const TOLERANCIA_MIN = 15;
 const LIMITE_PROLONGADA_MIN = 720;
 
+/* ISA-101 High-Performance Mining HMI — Mineral & Metallic Status Palette */
 const STATUS_COR: Record<AuditStatus, string> = {
-  OK: '#3ea87d',
-  HERDADO: '#5c9ce6',
-  SUPRIMIDO: '#a78bfa',
-  ALERTA: '#d9953b',
-  ERRO: '#d9606a',
-  DESCARTADO: '#8f8c83',
+  OK: '#dfc076',
+  HERDADO: '#94a7b8',
+  SUPRIMIDO: '#b88e62',
+  ALERTA: '#d9973b',
+  ERRO: '#c4624a',
+  DESCARTADO: '#7e7b73',
 };
 
 const STATUS_LIST: AuditStatus[] = ['OK', 'HERDADO', 'SUPRIMIDO', 'ALERTA', 'ERRO', 'DESCARTADO'];
@@ -285,12 +286,18 @@ export default function BreSimulator({ t }: BreSimulatorProps) {
   return (
     <div className="lab-shell">
       <div className="lab-bar">
-        <div>
-          <div className="lab-bar-title">{tb.title}</div>
-          <div className="lab-bar-sub">{tb.subtitle}</div>
+        <div className="lab-bar-lead">
+          <span className="beacon-dot" aria-hidden="true" />
+          <div>
+            <div className="lab-bar-title">{tb.title}</div>
+            <div className="lab-bar-sub">{tb.subtitle}</div>
+          </div>
         </div>
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          <span className="case-badge prod">{res.ms.toFixed(2)} ms</span>
+          <span className="case-badge prod">
+            <span className="badge-dot" aria-hidden="true" />
+            {res.ms.toFixed(2)} ms
+          </span>
           <span className="case-badge">
             {res.falsosEvitados} {tb.falsePositivesFiltered}
           </span>
@@ -406,7 +413,9 @@ export default function BreSimulator({ t }: BreSimulatorProps) {
                 }
                 onClick={() => setFiltro(status)}
               >
-                {label}: {count}
+                {status !== 'TODOS' && <span className="status-dot" aria-hidden="true" />}
+                <span>{label}</span>
+                <span className="bre-chip-count">{count}</span>
               </button>
             );
           })}
@@ -446,6 +455,7 @@ export default function BreSimulator({ t }: BreSimulatorProps) {
                       className="bre-tag"
                       style={{ '--c': STATUS_COR[r.status] } as CSSProperties}
                     >
+                      <span className="status-dot" aria-hidden="true" />
                       {tb.statusLabels[r.status]}
                     </span>
                   </td>

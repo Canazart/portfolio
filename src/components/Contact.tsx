@@ -23,8 +23,8 @@ export function Contact({ t }: ContactProps) {
 
   return (
     <section className="contact-section" id="contact">
-      <div className="contact-box reveal">
-        <div>
+      <div className="contact-box spotlight-card reveal">
+        <div className="contact-info">
           <h2 className="contact-title">{t.contact.title}</h2>
           <p className="contact-note">{t.contact.note}</p>
         </div>

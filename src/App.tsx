@@ -64,34 +64,69 @@ function App() {
         }
       }
       setActiveSection(current);
+
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = maxScroll > 0 ? Math.min(1, Math.max(0, window.scrollY / maxScroll)) : 0;
+      document.documentElement.style.setProperty('--scroll-progress', progress.toFixed(4));
+    };
+
+    const handlePointerMove = (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse') return;
+      const target = e.target as HTMLElement | null;
+      const card = target?.closest('.spotlight-card') as HTMLElement | null;
+      if (card) {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--mx', `${e.clientX - rect.left}px`);
+        card.style.setProperty('--my', `${e.clientY - rect.top}px`);
+      }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
     handleScroll();
 
     return () => {
       obs.disconnect();
       window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('pointermove', handlePointerMove);
     };
   }, []);
 
   return (
     <>
+      <div className="ambient-scene" aria-hidden="true">
+        <div className="ambient-grid" />
+        <div className="ambient-orb ambient-orb-1" />
+        <div className="ambient-orb ambient-orb-2" />
+      </div>
+
       <Nav activeSection={activeSection} lang={lang} onLangChange={setLang} t={t} />
-      <main>
+      <main className="page-main">
         <Hero t={t} />
-        <div className="divider" />
+        <div className="divider" aria-hidden="true">
+          <span className="divider-node" />
+        </div>
         <About t={t} />
-        <div className="divider" />
+        <div className="divider" aria-hidden="true">
+          <span className="divider-node" />
+        </div>
         <Experience t={t} />
-        <div className="divider" />
+        <div className="divider" aria-hidden="true">
+          <span className="divider-node" />
+        </div>
         <Projects onOpenLabTab={setLabTab} t={t} />
-        <div className="divider" />
+        <div className="divider" aria-hidden="true">
+          <span className="divider-node" />
+        </div>
         <SicDemo activeTab={labTab} onTabChange={setLabTab} lang={lang} t={t} />
-        <div className="divider" />
+        <div className="divider" aria-hidden="true">
+          <span className="divider-node" />
+        </div>
         <Education t={t} />
       </main>
-      <div className="divider" />
+      <div className="divider" aria-hidden="true">
+        <span className="divider-node" />
+      </div>
       <Contact t={t} />
       <Footer t={t} />
     </>

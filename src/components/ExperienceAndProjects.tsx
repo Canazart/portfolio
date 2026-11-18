@@ -15,50 +15,58 @@ export function Experience({ t }: ExpProps) {
       </div>
 
       <div className="exp-list-wrap">
-        {t.experience.items.map((item) => (
-          <article key={item.company} className="exp-row reveal">
-            <div>
-              <div className="exp-period">{item.period}</div>
-              <div className="exp-loc">{item.location}</div>
-              {item.sublocation && <div className="exp-loc">{item.sublocation}</div>}
-            </div>
+        {t.experience.items.map((item, idx) => {
+          const isCurrent = Boolean(item.subroles?.some((sr) => sr.current));
+          return (
+            <article key={item.company} className={`exp-row reveal stagger-${(idx % 3) + 1}`}>
+              <div className="exp-meta-col">
+                <div className="exp-period">{item.period}</div>
+                <div className="exp-loc">{item.location}</div>
+                {item.sublocation && <div className="exp-loc">{item.sublocation}</div>}
+              </div>
 
-            <div>
-              <h3 className="exp-company">{item.company}</h3>
+              <div className="exp-timeline-rail" aria-hidden="true">
+                <span className={`exp-node ${isCurrent ? 'current' : ''}`} />
+              </div>
 
-              {item.subroles ? (
-                <div className="exp-subroles">
-                  {item.subroles.map((sr) => (
-                    <div key={sr.title}>
-                      <div className="exp-subrole-head">
-                        <div className={`exp-subrole-name ${sr.current ? 'current' : ''}`}>
-                          {sr.title}
+              <div className={`exp-card spotlight-card ${isCurrent ? 'is-current' : ''}`}>
+                <h3 className="exp-company">{item.company}</h3>
+
+                {item.subroles ? (
+                  <div className="exp-subroles">
+                    {item.subroles.map((sr) => (
+                      <div key={sr.title} className="exp-subrole-item">
+                        <div className="exp-subrole-head">
+                          <div className={`exp-subrole-name ${sr.current ? 'current' : ''}`}>
+                            {sr.current && <span className="beacon-dot beacon-sm" aria-hidden="true" />}
+                            <span>{sr.title}</span>
+                          </div>
+                          <span className="exp-subrole-period">{sr.period}</span>
                         </div>
-                        <span className="exp-subrole-period">{sr.period}</span>
+                        <ul className="exp-bullets">
+                          {sr.bullets.map((b, bIdx) => (
+                            <li key={bIdx}>{b}</li>
+                          ))}
+                        </ul>
                       </div>
+                    ))}
+                  </div>
+                ) : (
+                  <>
+                    {item.roleTitle && <div className="exp-role-title">{item.roleTitle}</div>}
+                    {item.bullets && (
                       <ul className="exp-bullets">
-                        {sr.bullets.map((b, idx) => (
-                          <li key={idx}>{b}</li>
+                        {item.bullets.map((b, bIdx) => (
+                          <li key={bIdx}>{b}</li>
                         ))}
                       </ul>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <>
-                  {item.roleTitle && <div className="exp-role-title">{item.roleTitle}</div>}
-                  {item.bullets && (
-                    <ul className="exp-bullets">
-                      {item.bullets.map((b, idx) => (
-                        <li key={idx}>{b}</li>
-                      ))}
-                    </ul>
-                  )}
-                </>
-              )}
-            </div>
-          </article>
-        ))}
+                    )}
+                  </>
+                )}
+              </div>
+            </article>
+          );
+        })}
       </div>
     </section>
   );
@@ -79,14 +87,20 @@ export function Projects({ onOpenLabTab, t }: ProjectsProps) {
       </div>
 
       <div className="case-list">
-        {t.projects.items.map((item) => (
-          <article key={item.title} className="case-card reveal">
+        {t.projects.items.map((item, idx) => (
+          <article key={item.title} className={`case-card spotlight-card reveal stagger-${(idx % 3) + 1}`}>
             <div className="case-top">
               <div>
-                <div className="case-meta">{item.meta}</div>
+                <div className="case-meta">
+                  <span className="case-num">{String(idx + 1).padStart(2, '0')}</span>
+                  <span>{item.meta}</span>
+                </div>
                 <h3 className="case-title">{item.title}</h3>
               </div>
-              <span className={`case-badge ${item.badgeType}`}>{item.badge}</span>
+              <span className={`case-badge ${item.badgeType}`}>
+                <span className="badge-dot" aria-hidden="true" />
+                {item.badge}
+              </span>
             </div>
 
             <div className="case-grid">
@@ -118,8 +132,8 @@ export function Projects({ onOpenLabTab, t }: ProjectsProps) {
                   className="case-action"
                   onClick={() => onOpenLabTab(item.actionTab!)}
                 >
-                  {item.actionLabel}
-                  <ArrowDownRight size={15} />
+                  <span>{item.actionLabel}</span>
+                  <ArrowDownRight size={15} className="case-action-icon" />
                 </a>
               )}
             </div>
