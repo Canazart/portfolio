@@ -516,28 +516,48 @@ nav.scrolled {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  opacity: 0.42;
+  opacity: 0.56;
+  animation: topoFloat 18s ease-in-out infinite alternate;
+}
+
+@keyframes topoFloat {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(-14px, 10px, 0) scale(1.025);
+  }
+}
+
+.topo-scan-group {
+  filter: drop-shadow(0 0 6px rgba(242, 217, 150, 0.75));
 }
 
 .topo-scan {
-  stroke-dasharray: 120 1200;
-  stroke-dashoffset: 1320;
-  animation: topoScan 11s linear infinite;
+  stroke-dasharray: 120 1050;
+  stroke-dashoffset: 1170;
+  opacity: 0.88;
+  animation: topoScan 6.5s linear infinite;
 }
 
 .topo-scan-2 {
-  animation-duration: 14s;
-  animation-delay: -4s;
+  animation-duration: 8.2s;
+  animation-delay: -2.4s;
 }
 
 .topo-scan-3 {
-  animation-duration: 17s;
-  animation-delay: -8s;
+  animation-duration: 9.8s;
+  animation-delay: -5.1s;
+}
+
+.topo-scan-4 {
+  animation-duration: 7.4s;
+  animation-delay: -3.8s;
 }
 
 @keyframes topoScan {
   0% {
-    stroke-dashoffset: 1320;
+    stroke-dashoffset: 1170;
   }
   100% {
     stroke-dashoffset: 0;
@@ -545,22 +565,50 @@ nav.scrolled {
 }
 
 .topo-node {
-  animation: nodePulse 3.6s ease-in-out infinite;
+  fill: #f2d996;
+  transform-box: fill-box;
+  transform-origin: center;
+  filter: drop-shadow(0 0 6px rgba(242, 217, 150, 0.9));
+  animation: nodePulse 3s ease-in-out infinite;
+}
+
+.topo-node-ring {
+  fill: none;
+  stroke: #e5c473;
+  stroke-width: 1.2;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: nodeRing 3s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 }
 
 .topo-node-delay {
-  animation-delay: 1.5s;
+  animation-delay: 1s;
+}
+
+.topo-node-delay-2 {
+  animation-delay: 2s;
 }
 
 @keyframes nodePulse {
   0%,
   100% {
-    opacity: 0.28;
-    r: 2.2;
+    opacity: 0.55;
+    transform: scale(0.92);
   }
   50% {
-    opacity: 0.9;
-    r: 3.4;
+    opacity: 1;
+    transform: scale(1.32);
+  }
+}
+
+@keyframes nodeRing {
+  0% {
+    opacity: 0.85;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(4.2);
   }
 }
 
@@ -2544,15 +2592,7 @@ footer {
   .hero-anim-1,
   .hero-anim-2,
   .hero-anim-3,
-  .hero-anim-4,
-  .ambient-orb,
-  .hero-glow,
-  .topo-scan,
-  .topo-node,
-  .beacon-dot,
-  .exp-node.current,
-  .case-badge.prod .badge-dot,
-  .equip-down .equip-pip {
+  .hero-anim-4 {
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;

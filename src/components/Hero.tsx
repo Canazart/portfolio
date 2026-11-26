@@ -28,7 +28,7 @@ export default function Hero({ t }: HeroProps) {
             <stop offset="100%" stopColor="#e2bf6e" stopOpacity="0" />
           </linearGradient>
         </defs>
-        <g fill="none" stroke="url(#topoGold)" strokeWidth="1.05">
+        <g fill="none" stroke="url(#topoGold)" strokeWidth="1.1" className="topo-lines-group">
           <path d="M520,-30 C710,65 820,155 1040,112 C1185,84 1290,145 1470,102" />
           <path d="M440,35 C660,132 805,222 1035,176 C1180,146 1285,205 1470,168" />
           <path d="M360,108 C615,205 785,295 1030,246 C1175,216 1280,278 1470,248" />
@@ -37,8 +37,14 @@ export default function Hero({ t }: HeroProps) {
           <path d="M740,392 C885,442 1005,498 1165,472 C1265,455 1340,492 1470,480" />
           <path d="M870,486 C990,524 1095,568 1225,550 C1310,538 1375,568 1470,558" />
         </g>
-        {/* Subtle animated telemetry scan lines tracing the pit contours */}
-        <g fill="none" stroke="url(#topoPulse)" strokeWidth="1.4" className="topo-scan-group">
+        {/* Luminous animated telemetry scan pulses gliding along the pit contours */}
+        <g
+          fill="none"
+          stroke="#f2d996"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          className="topo-scan-group"
+        >
           <path
             className="topo-scan topo-scan-1"
             d="M440,35 C660,132 805,222 1035,176 C1180,146 1285,205 1470,168"
@@ -51,12 +57,21 @@ export default function Hero({ t }: HeroProps) {
             className="topo-scan topo-scan-3"
             d="M740,392 C885,442 1005,498 1165,472 C1265,455 1340,492 1470,480"
           />
+          <path
+            className="topo-scan topo-scan-4"
+            d="M520,-30 C710,65 820,155 1040,112 C1185,84 1290,145 1470,102"
+          />
         </g>
-        {/* Subtle elevation benchmark nodes */}
-        <g fill="#e2bf6e" opacity="0.45">
-          <circle cx="1035" cy="176" r="2.5" className="topo-node" />
-          <circle cx="1065" cy="314" r="2.5" className="topo-node topo-node-delay" />
-          <circle cx="1165" cy="472" r="2" className="topo-node" />
+        {/* Pulsing elevation benchmark nodes with radar rings */}
+        <g className="topo-nodes-group">
+          <circle cx="1035" cy="176" r="4" className="topo-node-ring" />
+          <circle cx="1035" cy="176" r="2.8" className="topo-node" />
+
+          <circle cx="1065" cy="314" r="4" className="topo-node-ring topo-node-delay" />
+          <circle cx="1065" cy="314" r="2.8" className="topo-node topo-node-delay" />
+
+          <circle cx="1165" cy="472" r="4" className="topo-node-ring topo-node-delay-2" />
+          <circle cx="1165" cy="472" r="2.6" className="topo-node topo-node-delay-2" />
         </g>
       </svg>
 
