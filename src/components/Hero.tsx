@@ -37,11 +37,11 @@ export default function Hero({ t }: HeroProps) {
           <path d="M740,392 C885,442 1005,498 1165,472 C1265,455 1340,492 1470,480" />
           <path d="M870,486 C990,524 1095,568 1225,550 C1310,538 1375,568 1470,558" />
         </g>
-        {/* Luminous animated telemetry scan pulses gliding along the pit contours */}
+        {/* Subtle animated telemetry scan pulses gliding along the pit contours */}
         <g
           fill="none"
-          stroke="#f2d996"
-          strokeWidth="1.8"
+          stroke="#e5c473"
+          strokeWidth="1.2"
           strokeLinecap="round"
           className="topo-scan-group"
         >
@@ -57,21 +57,17 @@ export default function Hero({ t }: HeroProps) {
             className="topo-scan topo-scan-3"
             d="M740,392 C885,442 1005,498 1165,472 C1265,455 1340,492 1470,480"
           />
-          <path
-            className="topo-scan topo-scan-4"
-            d="M520,-30 C710,65 820,155 1040,112 C1185,84 1290,145 1470,102"
-          />
         </g>
-        {/* Pulsing elevation benchmark nodes with radar rings */}
+        {/* Delicate pulsing elevation benchmark nodes with thin radar rings */}
         <g className="topo-nodes-group">
-          <circle cx="1035" cy="176" r="4" className="topo-node-ring" />
-          <circle cx="1035" cy="176" r="2.8" className="topo-node" />
+          <circle cx="1035" cy="176" r="4" vectorEffect="non-scaling-stroke" className="topo-node-ring" />
+          <circle cx="1035" cy="176" r="2.2" className="topo-node" />
 
-          <circle cx="1065" cy="314" r="4" className="topo-node-ring topo-node-delay" />
-          <circle cx="1065" cy="314" r="2.8" className="topo-node topo-node-delay" />
+          <circle cx="1065" cy="314" r="4" vectorEffect="non-scaling-stroke" className="topo-node-ring topo-node-delay" />
+          <circle cx="1065" cy="314" r="2.2" className="topo-node topo-node-delay" />
 
-          <circle cx="1165" cy="472" r="4" className="topo-node-ring topo-node-delay-2" />
-          <circle cx="1165" cy="472" r="2.6" className="topo-node topo-node-delay-2" />
+          <circle cx="1165" cy="472" r="4" vectorEffect="non-scaling-stroke" className="topo-node-ring topo-node-delay-2" />
+          <circle cx="1165" cy="472" r="2" className="topo-node topo-node-delay-2" />
         </g>
       </svg>
 

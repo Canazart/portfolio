@@ -516,8 +516,10 @@ nav.scrolled {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  opacity: 0.56;
-  animation: topoFloat 18s ease-in-out infinite alternate;
+  opacity: 0.38;
+  mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.08) 38%, rgba(0, 0, 0, 0.72) 66%, #000 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.08) 38%, rgba(0, 0, 0, 0.72) 66%, #000 100%);
+  animation: topoFloat 22s ease-in-out infinite alternate;
 }
 
 @keyframes topoFloat {
@@ -525,39 +527,34 @@ nav.scrolled {
     transform: translate3d(0, 0, 0) scale(1);
   }
   100% {
-    transform: translate3d(-14px, 10px, 0) scale(1.025);
+    transform: translate3d(-10px, 7px, 0) scale(1.018);
   }
 }
 
 .topo-scan-group {
-  filter: drop-shadow(0 0 6px rgba(242, 217, 150, 0.75));
+  filter: drop-shadow(0 0 4px rgba(214, 177, 92, 0.45));
 }
 
 .topo-scan {
-  stroke-dasharray: 120 1050;
-  stroke-dashoffset: 1170;
-  opacity: 0.88;
-  animation: topoScan 6.5s linear infinite;
+  stroke-dasharray: 95 1080;
+  stroke-dashoffset: 1175;
+  opacity: 0.5;
+  animation: topoScan 11s linear infinite;
 }
 
 .topo-scan-2 {
-  animation-duration: 8.2s;
-  animation-delay: -2.4s;
+  animation-duration: 14s;
+  animation-delay: -4s;
 }
 
 .topo-scan-3 {
-  animation-duration: 9.8s;
-  animation-delay: -5.1s;
-}
-
-.topo-scan-4 {
-  animation-duration: 7.4s;
-  animation-delay: -3.8s;
+  animation-duration: 17s;
+  animation-delay: -8s;
 }
 
 @keyframes topoScan {
   0% {
-    stroke-dashoffset: 1170;
+    stroke-dashoffset: 1175;
   }
   100% {
     stroke-dashoffset: 0;
@@ -565,50 +562,50 @@ nav.scrolled {
 }
 
 .topo-node {
-  fill: #f2d996;
+  fill: #e5c473;
   transform-box: fill-box;
   transform-origin: center;
-  filter: drop-shadow(0 0 6px rgba(242, 217, 150, 0.9));
-  animation: nodePulse 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 4px rgba(214, 177, 92, 0.55));
+  animation: nodePulse 4.2s ease-in-out infinite;
 }
 
 .topo-node-ring {
   fill: none;
-  stroke: #e5c473;
-  stroke-width: 1.2;
+  stroke: rgba(214, 177, 92, 0.55);
+  stroke-width: 0.85;
   transform-box: fill-box;
   transform-origin: center;
-  animation: nodeRing 3s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  animation: nodeRing 4.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 }
 
 .topo-node-delay {
-  animation-delay: 1s;
+  animation-delay: 1.4s;
 }
 
 .topo-node-delay-2 {
-  animation-delay: 2s;
+  animation-delay: 2.8s;
 }
 
 @keyframes nodePulse {
   0%,
   100% {
-    opacity: 0.55;
+    opacity: 0.35;
     transform: scale(0.92);
   }
   50% {
-    opacity: 1;
-    transform: scale(1.32);
+    opacity: 0.78;
+    transform: scale(1.16);
   }
 }
 
 @keyframes nodeRing {
   0% {
-    opacity: 0.85;
-    transform: scale(0.8);
+    opacity: 0.42;
+    transform: scale(0.85);
   }
   100% {
     opacity: 0;
-    transform: scale(4.2);
+    transform: scale(2.8);
   }
 }
 
