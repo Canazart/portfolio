@@ -30,7 +30,7 @@ export interface CaseStudy {
   result: string;
   tags: string[];
   actionLabel?: string;
-  actionTab?: 'bre' | 'sic';
+  actionTab?: 'dim' | 'bre' | 'sic';
 }
 
 export interface Translation {
@@ -78,6 +78,7 @@ export interface Translation {
     title: string;
     subtitle: string;
     ariaTabs: string;
+    tabDim: string;
     tabBre: string;
     tabSic: string;
   };
@@ -300,6 +301,7 @@ export const TRANSLATIONS: Record<Lang, Translation> = {
                 'Monitoramento de KPIs operacionais e identificação de desvios de produção e produtividade.',
                 'Interface com planejamento de curto prazo e manutenção para tratamento de inconsistências e otimização da frota.',
                 'Suporte à implantação, parametrização e evolução do sistema MineTrack.',
+                'Arquitetura e desenvolvimento da Engine de Dimensionamento de Frota 8×4 & Cronoanálise integrada à API REST (MineTrack/SODEP) via Cloudflare Workers e motor de referência em Python/NumPy, em parceria com o Planejamento de Curto Prazo (>97% de aderência histórica).',
                 'Desenvolvimento do Algoritmo de Validação Heurística e Auditoria de Frota, aplicado à validação de apontamentos operacionais.',
                 'Evolução da ferramenta de Short Interval Control (SIC) para acompanhamento operacional e suporte à decisão.',
               ],
@@ -361,6 +363,32 @@ export const TRANSLATIONS: Record<Lang, Translation> = {
       items: [
         {
           meta: 'ago 2026 a atual; associado à Bemisa',
+          title: 'Engine de Dimensionamento de Frota 8×4 & Cronoanálise — Integração API REST',
+          badge: 'Projeto aplicado',
+          badgeType: 'prod',
+          problemLabel: 'Problema',
+          problem:
+            'O dimensionamento mensal de caminhões 8×4 e a cronoanálise de ciclo dependiam de extrações e rateios manuais em planilhas, sujeitos a distorções por dias parciais, outliers de velocidade e rateio impreciso de paradas operacionais como Pare e Siga.',
+          approachLabel: 'Arquitetura & engenharia de dados',
+          approach:
+            'Aplicação analítica single-file (HTML5/CSS3/Vanilla JS, ~120 KB, zero dependências de servidor) e motor de referência em Python/NumPy integrados à API REST do MineTrack/SODEP via proxy CORS em Cloudflare Workers: ingestão assíncrona em lotes (Promise.all) sobre /fato-producao e /fato-apontamento com fallback UTF-8/Windows-1252 e deduplicação por chave composta; detecção automática de dias fechados (cobertura ≥ 75%), limpeza de outliers via IQR e mediana; motor matemático L04–L44 (DF, UF, RO, UG, UE, EO, rateio proporcional de Pare e Siga, produtividade t/h e frota necessária 8×4); gráficos SVG nativos, radar GPS e exportação client-side em .xlsx (OpenXML) e .csv.',
+          resultLabel: 'Validação e resultado',
+          result:
+            'Desenvolvido em parceria com a Engenharia de Planejamento de Curto Prazo e homologado contra 4 fechamentos mensais históricos consecutivos, atingindo >97% de aderência no dimensionamento e eliminando distorções de rateio manual em planilhas.',
+          tags: [
+            'JavaScript ES6+',
+            'Python / NumPy',
+            'API REST (SODEP)',
+            'Cloudflare Workers',
+            'Estatística (IQR)',
+            'Dimensionamento 8×4',
+            'SVG / OpenXML (.xlsx)',
+          ],
+          actionLabel: 'Abrir simulador de Dimensionamento',
+          actionTab: 'dim',
+        },
+        {
+          meta: 'ago 2026 a atual; associado à Bemisa',
           title: 'Algoritmo de Validação Heurística e Auditoria de Frota (Custom BRE)',
           badge: 'Projeto aplicado',
           badgeType: 'prod',
@@ -416,8 +444,9 @@ export const TRANSLATIONS: Record<Lang, Translation> = {
     lab: {
       kicker: 'Demonstrações interativas',
       title: 'Ferramentas em execução',
-      subtitle: 'Simulações funcionais com dados fictícios dos dois sistemas desenvolvidos para a rotina de sala de controle.',
+      subtitle: 'Simulações funcionais com dados operacionais dos três sistemas desenvolvidos para a rotina de sala de controle e planejamento de curto prazo.',
       ariaTabs: 'Selecionar demonstração',
+      tabDim: 'Dimensionamento 8×4 & Cronoanálise',
       tabBre: 'Auditoria de Frota (Custom BRE)',
       tabSic: 'Controle Horário (SIC)',
     },
@@ -707,6 +736,7 @@ export const TRANSLATIONS: Record<Lang, Translation> = {
                 'Monitoring operational KPIs and identifying production and productivity deviations.',
                 'Direct interface with short-term mine planning and maintenance to resolve data inconsistencies and optimize fleet allocation.',
                 'Support for deployment, parameterization, and continuous improvement of MineTrack.',
+                'Architected and built the 8×4 Fleet Sizing & Time-Motion Engine integrated with the MineTrack/SODEP REST API via Cloudflare Workers and a Python/NumPy reference engine, in partnership with Short-Term Mine Planning (>97% historical adherence).',
                 'Development of the Heuristic Validation and Fleet Audit Algorithm (Custom BRE) for auditing operational logs.',
                 'Ongoing development of the Short Interval Control (SIC) tool for hourly tracking and decision support.',
               ],
@@ -768,6 +798,32 @@ export const TRANSLATIONS: Record<Lang, Translation> = {
       items: [
         {
           meta: 'Aug 2026 to present; associated with Bemisa',
+          title: '8×4 Fleet Sizing & Time-Motion Engine — REST API Integration',
+          badge: 'Applied project',
+          badgeType: 'prod',
+          problemLabel: 'Problem',
+          problem:
+            'Monthly 8×4 haul truck sizing and cycle time-motion analysis relied on manual spreadsheet exports and allocations, prone to distortion from partial days, speed outliers, and imprecise stop-and-go allocation.',
+          approachLabel: 'Architecture & data engineering',
+          approach:
+            'Single-file analytical web app (HTML5/CSS3/Vanilla JS, ~120 KB, zero server dependencies) and Python/NumPy reference engine integrated directly with the MineTrack/SODEP REST API via a Cloudflare Worker CORS proxy: parallel batch ingestion (Promise.all) over /fato-producao and /fato-apontamento with UTF-8/Windows-1252 fallback and composite-key deduplication; closed-day detection (≥75% coverage), IQR outlier cleaning and median cycle modeling; 37-line mathematical sizing engine (L04–L44) computing PA/DF, UF, RO, UG, UE, EO, proportional Stop-and-Go allocation, weighted t/h productivity, and required 8×4 trucks; native SVG charts, GPS radar, and client-side .xlsx (OpenXML) and .csv export.',
+          resultLabel: 'Validation & outcome',
+          result:
+            'Built in partnership with Short-Term Mine Planning Engineering and validated against 4 consecutive historical monthly closings, achieving >97% sizing adherence and eliminating manual spreadsheet distortions.',
+          tags: [
+            'JavaScript ES6+',
+            'Python / NumPy',
+            'REST API (SODEP)',
+            'Cloudflare Workers',
+            'Statistics (IQR)',
+            '8×4 Fleet Sizing',
+            'SVG / OpenXML (.xlsx)',
+          ],
+          actionLabel: 'Open Fleet Sizing simulator',
+          actionTab: 'dim',
+        },
+        {
+          meta: 'Aug 2026 to present; associated with Bemisa',
           title: 'Heuristic Validation and Fleet Audit Algorithm (Custom BRE)',
           badge: 'Applied project',
           badgeType: 'prod',
@@ -823,8 +879,9 @@ export const TRANSLATIONS: Record<Lang, Translation> = {
     lab: {
       kicker: 'Interactive demos',
       title: 'Live tools',
-      subtitle: 'Functional browser simulations with sample data for both operational control systems.',
+      subtitle: 'Functional browser simulations with sample data for all three operational control and short-term planning systems.',
       ariaTabs: 'Select demo',
+      tabDim: '8×4 Fleet Sizing & Time-Motion',
       tabBre: 'Fleet Audit Engine (Custom BRE)',
       tabSic: 'Hourly Shift Control (SIC)',
     },
@@ -1114,6 +1171,7 @@ export const TRANSLATIONS: Record<Lang, Translation> = {
                 'Monitoreo de KPIs operacionales e identificación de desvíos de producción y productividad.',
                 'Interfaz directa con planificación de corto plazo y mantenimiento para corregir inconsistencias y optimizar la flota.',
                 'Soporte a la implementación, parametrización y evolución del sistema MineTrack.',
+                'Arquitectura y desarrollo del Motor de Dimensionamiento de Flota 8×4 y Cronoanálisis integrado a la API REST (MineTrack/SODEP) mediante Cloudflare Workers y motor de referencia en Python/NumPy, en asociación con Planificación de Corto Plazo (>97% de adherencia histórica).',
                 'Desarrollo del Algoritmo de Validación Heurística y Auditoría de Flota para validar registros operacionales.',
                 'Evolución de la herramienta de Short Interval Control (SIC) para seguimiento horario y soporte a la decisión.',
               ],
@@ -1175,6 +1233,32 @@ export const TRANSLATIONS: Record<Lang, Translation> = {
       items: [
         {
           meta: 'ago 2026 a actual; asociado a Bemisa',
+          title: 'Motor de Dimensionamiento de Flota 8×4 y Cronoanálisis — Integración API REST',
+          badge: 'Proyecto aplicado',
+          badgeType: 'prod',
+          problemLabel: 'Problema',
+          problem:
+            'El dimensionamiento mensual de camiones 8×4 y el cronoanálisis de ciclo dependían de extracciones y prorrateos manuales en hojas de cálculo, expuestos a distorsiones por días parciales, valores atípicos de velocidad y asignación imprecisa de paradas operacionales.',
+          approachLabel: 'Arquitectura e ingeniería de datos',
+          approach:
+            'Aplicación analítica single-file (HTML5/CSS3/Vanilla JS, ~120 KB, cero dependencias de servidor) y motor de referencia en Python/NumPy integrados a la API REST de MineTrack/SODEP mediante proxy CORS en Cloudflare Workers: ingesta asíncrona en lotes (Promise.all) sobre /fato-producao y /fato-apontamento con fallback UTF-8/Windows-1252 y deduplicación por clave compuesta; detección de días cerrados (cobertura ≥ 75%), limpieza de outliers vía IQR y mediana; motor matemático L04–L44 (DF, UF, RO, UG, UE, EO, prorrateo de Pare y Siga, productividad t/h y flota requerida 8×4); gráficos SVG nativos, radar GPS y exportación client-side en .xlsx (OpenXML) y .csv.',
+          resultLabel: 'Validación y resultado',
+          result:
+            'Desarrollado en conjunto con Ingeniería de Planificación de Corto Plazo y homologado frente a 4 cierres mensuales históricos consecutivos, alcanzando >97% de adherencia en el dimensionamiento y eliminando distorsiones manuales.',
+          tags: [
+            'JavaScript ES6+',
+            'Python / NumPy',
+            'API REST (SODEP)',
+            'Cloudflare Workers',
+            'Estadística (IQR)',
+            'Dimensionamiento 8×4',
+            'SVG / OpenXML (.xlsx)',
+          ],
+          actionLabel: 'Abrir simulador de Dimensionamiento',
+          actionTab: 'dim',
+        },
+        {
+          meta: 'ago 2026 a actual; asociado a Bemisa',
           title: 'Algoritmo de Validación Heurística y Auditoría de Flota (Custom BRE)',
           badge: 'Proyecto aplicado',
           badgeType: 'prod',
@@ -1230,8 +1314,9 @@ export const TRANSLATIONS: Record<Lang, Translation> = {
     lab: {
       kicker: 'Demostraciones interactivas',
       title: 'Herramientas en ejecución',
-      subtitle: 'Simulaciones funcionales con datos ficticios de los dos sistemas desarrollados para sala de control.',
+      subtitle: 'Simulaciones funcionales con datos operacionales de los tres sistemas desarrollados para sala de control y planificación de corto plazo.',
       ariaTabs: 'Seleccionar demostración',
+      tabDim: 'Dimensionamiento 8×4 y Cronoanálisis',
       tabBre: 'Auditoría de Flota (Custom BRE)',
       tabSic: 'Control Horario (SIC)',
     },
@@ -1521,6 +1606,7 @@ export const TRANSLATIONS: Record<Lang, Translation> = {
                 '监控运营 KPI，及时识别产量与生产率偏差。',
                 '对接短期采矿计划与设备维护团队，处理数据异常并优化车队配置。',
                 '支持 MineTrack 调度系统的部署、参数配置与持续优化。',
+                '联合短期采矿计划团队架构并开发 8×4 矿卡车队配置与时动分析引擎，通过 Cloudflare Workers 直连 MineTrack/SODEP REST API 并配套 Python/NumPy 参考计算引擎（连续 4 个月历史月结验证拟合度 >97%）。',
                 '开发启发式验证与车队审计引擎 (Custom BRE)，实现运营记录的自动化审计。',
                 '持续迭代短周期控制 (SIC) 工具，支撑班次监控与现场决策。',
               ],
@@ -1582,6 +1668,32 @@ export const TRANSLATIONS: Record<Lang, Translation> = {
       items: [
         {
           meta: '2026年8月 至今；关联 Bemisa',
+          title: '8×4 矿卡车队配置与时动分析引擎 — REST API 集成',
+          badge: '已落地应用',
+          badgeType: 'prod',
+          problemLabel: '业务痛点',
+          problem:
+            '8×4 运输车队月度运力配置与循环时动分析此前依赖人工导出与电子表格分摊，易受非完整日数据、车速离群值及交通管制等待时间分摊失真影响。',
+          approachLabel: '系统架构与数据工程',
+          approach:
+            '单文件分析型 Web 应用（HTML5/CSS3/Vanilla JS，约 120 KB，零服务端依赖）与 Python/NumPy 参考计算引擎，通过 Cloudflare Workers CORS 代理直连 MineTrack/SODEP 调度系统 REST API：基于 Promise.all 并发批量拉取 /fato-producao 与 /fato-apontamento，支持 UTF-8/Windows-1252 编码回退与复合键内存去重；自动识别完整结账日（车队日历工时覆盖率 ≥75%），采用四分位距 (IQR) 剔除重车/空车速度离群值并以中位数建模固定循环时长；构建 L04–L44（37 行）数学配置矩阵，自动计算 DF、UF、RO、UG、UE、EO、按班次/车次比例分摊交通管制耗时、加权生产率 (t/h) 及所需 8×4 矿卡数量；提供原生 SVG 图表、GPS 坐标散点雷达以及纯前端 .xlsx (OpenXML) 与 .csv 导出。',
+          resultLabel: '验证与实际成效',
+          result:
+            '与短期采矿计划工程团队联合开发，经连续 4 个月历史月度结算数据对标核验，运力配置吻合度达 >97%，彻底消除人工表格分摊偏差。',
+          tags: [
+            'JavaScript ES6+',
+            'Python / NumPy',
+            'REST API (SODEP)',
+            'Cloudflare Workers',
+            '统计清洗 (IQR)',
+            '8×4 车队运力配置',
+            'SVG / OpenXML (.xlsx)',
+          ],
+          actionLabel: '打开车队配置模拟器',
+          actionTab: 'dim',
+        },
+        {
+          meta: '2026年8月 至今；关联 Bemisa',
           title: '启发式验证与车队审计引擎 (Custom BRE)',
           badge: '已落地应用',
           badgeType: 'prod',
@@ -1637,8 +1749,9 @@ export const TRANSLATIONS: Record<Lang, Translation> = {
     lab: {
       kicker: '交互演示',
       title: '在线运行工具',
-      subtitle: '基于示例数据的浏览器实时演示，可亲身体验两套控制室工具的核心逻辑。',
+      subtitle: '基于示例数据的浏览器实时演示，可亲身体验三套控制室与短期计划工具的核心逻辑。',
       ariaTabs: '选择演示工具',
+      tabDim: '8×4 车队配置与时动分析',
       tabBre: '车队审计引擎 (Custom BRE)',
       tabSic: '小时班次控制 (SIC)',
     },
@@ -1684,8 +1797,8 @@ export const TRANSLATIONS: Record<Lang, Translation> = {
       rulesWindowsVal: '06:45 至 07:15、11:30 至 12:30、18:45 至 19:15',
       rulesTolLabel: '净容差：',
       rulesLongIdleLabel: '长期闲置阈值：',
-      showMore: (remaining) => `展开更多（+${remaining} 条记录）`,
-      showLess: '收起表格',
+      showMore: (remaining) => `展开更多 (+${remaining} 条记录)`,
+      showLess: '收起列表',
       footerNote: '基于 JavaScript (ES6+) 在浏览器端实时运行；演示使用虚构数据。',
       clsLabels: {
         PROD: '生产',

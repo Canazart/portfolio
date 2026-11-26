@@ -25,7 +25,7 @@ function getInitialLang(): Lang {
 
 function App() {
   const [activeSection, setActiveSection] = useState('');
-  const [labTab, setLabTab] = useState<LabTab>('bre');
+  const [labTab, setLabTab] = useState<LabTab>('dim');
   const [lang, setLang] = useState<Lang>(getInitialLang);
 
   const t = TRANSLATIONS[lang];

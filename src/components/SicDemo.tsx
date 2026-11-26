@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import {
   Activity,
   ChevronRight,
+  Cpu,
   Pause,
   Play,
   RotateCcw,
@@ -19,9 +20,10 @@ import {
   Legend,
 } from 'recharts';
 import BreSimulator from './BreSimulator';
+import DimSimulator from './DimSimulator';
 import type { Lang, Translation } from '../i18n';
 
-export type LabTab = 'bre' | 'sic';
+export type LabTab = 'dim' | 'bre' | 'sic';
 
 interface SicDemoProps {
   activeTab: LabTab;
@@ -194,6 +196,16 @@ export default function SicDemo({ activeTab, onTabChange, lang, t }: SicDemoProp
         <button
           type="button"
           role="tab"
+          aria-selected={activeTab === 'dim'}
+          className={`lab-tab ${activeTab === 'dim' ? 'active' : ''}`}
+          onClick={() => onTabChange('dim')}
+        >
+          <Cpu size={15} />
+          {t.lab.tabDim}
+        </button>
+        <button
+          type="button"
+          role="tab"
           aria-selected={activeTab === 'bre'}
           className={`lab-tab ${activeTab === 'bre' ? 'active' : ''}`}
           onClick={() => onTabChange('bre')}
@@ -214,7 +226,9 @@ export default function SicDemo({ activeTab, onTabChange, lang, t }: SicDemoProp
       </div>
 
       <div className="reveal">
-        {activeTab === 'bre' ? (
+        {activeTab === 'dim' ? (
+          <DimSimulator lang={lang} />
+        ) : activeTab === 'bre' ? (
           <BreSimulator t={t} />
         ) : (
           <div className="lab-shell">
